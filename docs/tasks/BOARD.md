@@ -6,9 +6,9 @@ Owner: `@pm`. Fonte única de verdade do progresso. Cada linha aponta para o arq
 
 | ID | Título | Milestone | Agente | Status |
 |---|---|---|---|---|
-| [TASK-0001](backlog/TASK-0001-setup-projeto-gitflow-github.md) | Setup projeto Next.js, GitFlow, GitHub | Fase2 | `@devops` | Backlog |
-| [TASK-0002](backlog/TASK-0002-pipeline-cicd.md) | Pipeline CI/CD (GitHub Actions) | Fase3 | `@devops` | Backlog |
-| [TASK-0003](backlog/TASK-0003-deploy-vercel.md) | Configuração de deploy na Vercel | Fase4 | `@devops` | Backlog |
+| [TASK-0001](done/TASK-0001-setup-projeto-gitflow-github.md) | Setup projeto Next.js, GitFlow, GitHub | Fase2 | `@devops` | Concluida |
+| [TASK-0002](backlog/TASK-0002-pipeline-cicd.md) | Pipeline CI/CD (GitHub Actions) | Fase3 | `@devops` | Pronta |
+| [TASK-0003](backlog/TASK-0003-deploy-vercel.md) | Configuração de deploy na Vercel | Fase4 | `@devops` | Pronta |
 
 ## Fase 5 (Implementação incremental)
 
