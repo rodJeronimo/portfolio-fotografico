@@ -14,7 +14,7 @@ Owner: `@pm`. Fonte única de verdade do progresso. Cada linha aponta para o arq
 
 | ID | Título | Milestone | Agente | Status |
 |---|---|---|---|---|
-| [TASK-0004](backlog/TASK-0004-m0-fundacao.md) | Fundação: design tokens, layout root, fontes | M0 | `@frontend` | Backlog |
+| [TASK-0004](backlog/TASK-0004-m0-fundacao.md) | Fundação: design tokens, layout root, fontes | M0 | `@frontend` | Em revisao (PR #3) |
 | [TASK-0005](backlog/TASK-0005-m1-db-auth.md) | DB e Auth: schema Drizzle, NextAuth v5 | M1 | `@backend` | Backlog |
 | [TASK-0006](backlog/TASK-0006-m2-admin-upload-mvp.md) | Admin upload MVP | M2 | `@backend` | Backlog |
 | [TASK-0007](backlog/TASK-0007-m3-pipeline-imagens.md) | Pipeline de imagens (otimização, LQIP, ordenação) | M3 | `@backend` | Backlog |
