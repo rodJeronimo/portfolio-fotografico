@@ -1,0 +1,44 @@
+# CODEOWNERS
+#
+# GitHub exige usuarios/times reais (nao aceita @arquiteto, @frontend, etc.),
+# entao todo path aponta para o mantenedor real do repositorio. O comentario
+# ao lado de cada linha indica qual agente Claude Code e o dono conceitual
+# daquela area, conforme .claude/CLAUDE.md, para orientar quem revisa o PR.
+
+# Default: qualquer arquivo nao listado abaixo
+*                                   @rodJeronimo
+
+# @devops — CI/CD, infra, protecao de branch
+/.github/                          @rodJeronimo
+/vercel.json                       @rodJeronimo
+/.github/CODEOWNERS                @rodJeronimo
+
+# @backend — dados, auth, upload, otimizacao de imagem
+/src/db/                           @rodJeronimo
+/src/lib/auth/                     @rodJeronimo
+/src/lib/storage/                  @rodJeronimo
+/src/lib/image-pipeline/           @rodJeronimo
+/src/app/api/                      @rodJeronimo
+/src/app/(admin)/                  @rodJeronimo
+/src/middleware.ts                 @rodJeronimo
+/drizzle/                          @rodJeronimo
+/drizzle.config.ts                 @rodJeronimo
+
+# @frontend — UI, componentes, paginas publicas
+/src/app/(public)/                 @rodJeronimo
+/src/components/                   @rodJeronimo
+
+# @arquiteto — decisoes estruturais e documentacao de arquitetura
+/docs/ADR/                         @rodJeronimo
+/docs/architecture/                @rodJeronimo
+
+# @ux-designer — guidelines de design
+/docs/design/                      @rodJeronimo
+
+# @pm — board de tasks
+/docs/tasks/                       @rodJeronimo
+
+# @qa — testes
+/tests/                            @rodJeronimo
+/vitest.config.ts                  @rodJeronimo
+/playwright.config.ts              @rodJeronimo
