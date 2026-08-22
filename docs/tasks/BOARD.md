@@ -8,14 +8,14 @@ Owner: `@pm`. Fonte única de verdade do progresso. Cada linha aponta para o arq
 |---|---|---|---|---|
 | [TASK-0001](done/TASK-0001-setup-projeto-gitflow-github.md) | Setup projeto Next.js, GitFlow, GitHub | Fase2 | `@devops` | Concluida |
 | [TASK-0002](done/TASK-0002-pipeline-cicd.md) | Pipeline CI/CD (GitHub Actions) | Fase3 | `@devops` | Concluida |
-| [TASK-0003](backlog/TASK-0003-deploy-vercel.md) | Configuração de deploy na Vercel | Fase4 | `@devops` | Bloqueada (requer `vercel login` do usuário) |
+| [TASK-0003](backlog/TASK-0003-deploy-vercel.md) | Configuração de deploy na Vercel | Fase4 | `@devops` | Em andamento (secrets ok, env vars reais pendentes) |
 
 ## Fase 5 (Implementação incremental)
 
 | ID | Título | Milestone | Agente | Status |
 |---|---|---|---|---|
-| [TASK-0004](backlog/TASK-0004-m0-fundacao.md) | Fundação: design tokens, layout root, fontes | M0 | `@frontend` | Em revisao (PR #3) |
-| [TASK-0005](backlog/TASK-0005-m1-db-auth.md) | DB e Auth: schema Drizzle, NextAuth v5 | M1 | `@backend` | Backlog |
+| [TASK-0004](done/TASK-0004-m0-fundacao.md) | Fundação: design tokens, layout root, fontes | M0 | `@frontend` | Concluida |
+| [TASK-0005](backlog/TASK-0005-m1-db-auth.md) | DB e Auth: schema Drizzle, NextAuth v5 | M1 | `@backend` | Pronta |
 | [TASK-0006](backlog/TASK-0006-m2-admin-upload-mvp.md) | Admin upload MVP | M2 | `@backend` | Backlog |
 | [TASK-0007](backlog/TASK-0007-m3-pipeline-imagens.md) | Pipeline de imagens (otimização, LQIP, ordenação) | M3 | `@backend` | Backlog |
 | [TASK-0008](backlog/TASK-0008-m4-galeria-publica.md) | Galeria pública (Home, projetos, lightbox) | M4 | `@frontend` | Backlog |
