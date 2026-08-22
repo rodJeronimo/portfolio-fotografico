@@ -39,6 +39,22 @@ Branches long-lived: **`main`** (produção) e **`develop`** (integração). Nun
 
 Commits seguem [Conventional Commits](https://www.conventionalcommits.org/). PRs devem incluir descrição, testes, ADRs atualizados (quando aplicável) e screenshots (mudanças de UI).
 
+**Cada task do board (`docs/tasks/`) vira uma branch `feature/TASK-NNNN-slug`** a partir de `develop`, com PR de volta — nunca commit direto, mesmo quando a proteção de branch permitiria.
+
+## CI/CD
+
+Workflows em [`.github/workflows/`](.github/workflows/):
+
+| Workflow | Trigger | O que faz |
+|---|---|---|
+| `ci.yml` | PR para `develop`/`main` | lint, type-check, test (Vitest + cobertura), build — em paralelo |
+| `e2e.yml` | PR para `main` | Playwright contra o preview deploy do PR |
+| `preview.yml` | PR aberto/atualizado em `develop` | deploy preview na Vercel + comentário com a URL no PR |
+| `release.yml` | push em `main` ou tag `v*` | deploy de produção na Vercel, `gh release create` (em tag), sync automático `main` → `develop` |
+| `hotfix.yml` | push em `hotfix/**` | CI completo + deploy de preview emergencial (produção acontece via `release.yml` ao mergear em `main`) |
+
+Secrets necessários no repositório (`Settings > Secrets and variables > Actions`): `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID` (ver `docs/tasks/backlog/TASK-0003-deploy-vercel.md`).
+
 ## Agentes Claude Code
 
 Este projeto usa subagentes especializados definidos em [`.claude/agents/`](.claude/agents/) (`@pm`, `@arquiteto`, `@ux-designer`, `@frontend`, `@backend`, `@devops`, `@qa`, `@reviewer`) — ver [`.claude/CLAUDE.md`](.claude/CLAUDE.md) para o mapeamento de responsabilidades.

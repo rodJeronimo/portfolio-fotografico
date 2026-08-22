@@ -1,0 +1,48 @@
+name: E2E
+
+on:
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: e2e-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  e2e:
+    name: Playwright e2e (contra preview)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: "npm"
+
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+
+      # PRs para main vêm de release/* ou hotfix/*, que já passaram pelo
+      # preview.yml em develop. Aqui aguardamos o Deployment/Status check
+      # de preview mais recente da Vercel para esse commit e usamos a URL
+      # resultante como alvo dos testes e2e.
+      - name: Wait for Vercel preview deployment
+        id: wait-preview
+        uses: patrickedqvist/wait-for-vercel-preview@v1.3.1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          max_timeout: 600
+
+      - name: Run Playwright tests
+        run: npx playwright test
+        env:
+          PLAYWRIGHT_BASE_URL: ${{ steps.wait-preview.outputs.url || 'http://localhost:3000' }}
+
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 14
