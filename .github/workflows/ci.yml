@@ -1,0 +1,81 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [develop, main]
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: "npm"
+      - run: npm ci
+      - run: npm run lint
+
+  type-check:
+    name: Type check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: "npm"
+      - run: npm ci
+      - run: npm run type-check
+
+  test:
+    name: Unit / integration tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: "npm"
+      - run: npm ci
+      - run: npm run test -- --coverage
+      - name: Upload coverage
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-report
+          path: coverage/
+          retention-days: 14
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    # Build precisa de env vars válidas (lib/env.ts valida em build time).
+    # Usa valores dummy — build não conecta de fato a Neon/R2/Auth.
+    env:
+      DATABASE_URL: "postgresql://user:pass@localhost:5432/db"
+      AUTH_SECRET: "ci-dummy-secret-ci-dummy-secret"
+      AUTH_GITHUB_ID: "ci-dummy"
+      AUTH_GITHUB_SECRET: "ci-dummy"
+      ADMIN_EMAILS: "ci@example.com"
+      STORAGE_R2_ACCOUNT_ID: "ci-dummy"
+      STORAGE_R2_ACCESS_KEY_ID: "ci-dummy"
+      STORAGE_R2_SECRET_ACCESS_KEY: "ci-dummy"
+      STORAGE_R2_BUCKET_NAME: "ci-dummy"
+      STORAGE_R2_PUBLIC_URL: "https://example.com"
+      UPSTASH_REDIS_REST_URL: "https://example.com"
+      UPSTASH_REDIS_REST_TOKEN: "ci-dummy"
+      NEXT_PUBLIC_SITE_URL: "https://example.com"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: "npm"
+      - run: npm ci
+      - run: npm run build
