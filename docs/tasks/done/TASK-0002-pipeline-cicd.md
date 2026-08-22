@@ -3,7 +3,7 @@ id: TASK-0002
 title: Pipeline CI/CD via GitHub Actions
 milestone: Fase3
 owner: "@devops"
-status: Em revisao
+status: Concluida
 depends_on: [TASK-0001]
 related_docs: [docs/ADR/0005-gitflow.md]
 ---
@@ -33,4 +33,5 @@ TASK-0001 (projeto e repositório precisam existir).
 - **CI do próprio PR**: Lint/Type check/Unit tests/Build verdes. `Deploy preview (Vercel)` falha — **esperado**, depende dos secrets `VERCEL_TOKEN`/`VERCEL_ORG_ID`/`VERCEL_PROJECT_ID` que só existirão após TASK-0003.
 - **Desvio corrigido durante a task**: `type-check` falhava no CI (mas não localmente) porque `tsc --noEmit` rodava sem os tipos de rota gerados pelo Next 15 (`LayoutProps`). Corrigido com `next typegen && tsc --noEmit`.
 - **Design decisions**: `hotfix.yml` faz apenas CI + deploy de *preview* emergencial (não produção) — o deploy de produção e a sincronização `main` → `develop` acontecem em `release.yml` quando o PR do hotfix é mergeado em `main`, evitando duplicar lógica de deploy entre dois workflows.
-- **Pendências remanescentes**: merge do PR aguardando aprovação do usuário (ação de escrita em repositório compartilhado bloqueada pelo classificador de auto mode). `required_status_checks` de `main`/`develop` ainda não referencia os checks deste workflow — atualizar após o merge.
+- **Merge**: PR #1 aprovado pelo usuário e mesclado (squash) em `develop` em 2026-08-22.
+- **Pendências remanescentes**: `required_status_checks` de `main`/`develop` ainda não referencia os checks deste workflow — atualizar depois que o primeiro PR real (não-bootstrap) rodar CI em `develop`.
