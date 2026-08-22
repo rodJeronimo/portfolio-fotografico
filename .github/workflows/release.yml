@@ -1,0 +1,93 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  deploy-production:
+    name: Deploy produção (Vercel)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: "npm"
+
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+
+      - name: Pull Vercel environment (production)
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+      - name: Build project artifacts
+        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+      - name: Deploy to Vercel (production)
+        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+  release-notes:
+    name: Gerar release notes
+    needs: deploy-production
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: gh release create
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
+            tag="${GITHUB_REF#refs/tags/}"
+            gh release create "$tag" --generate-notes
+          else
+            echo "Push em main sem tag — pulando gh release create (crie uma tag vX.Y.Z para gerar release notes)."
+          fi
+
+  sync-develop:
+    name: Sincronizar main -> develop
+    needs: deploy-production
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git fetch origin develop
+          if git diff --quiet origin/develop main -- 2>/dev/null; then
+            echo "develop já está atualizada com main."
+            exit 0
+          fi
+          branch="sync/main-to-develop-${GITHUB_SHA::7}"
+          git checkout -b "$branch" origin/develop
+          git merge origin/main --no-edit || {
+            echo "Merge com conflitos — abrindo PR mesmo assim para resolução manual.";
+          }
+          git push origin "$branch"
+          gh pr create --base develop --head "$branch" \
+            --title "chore: sync main -> develop após release" \
+            --body "Sincronização automática pós-release/hotfix (workflow release.yml)." || true
