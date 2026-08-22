@@ -20,6 +20,7 @@ Portfolio fotografico pessoal (fotografia de natureza) para exposicao de trabalh
 - **Commits**: Conventional Commits (`feat:`, `fix:`, `chore:`, `docs:`, `refactor:`, `test:`).
 - **Idioma**: codigo (identificadores, comentarios) em ingles; conteudo do site em PT-BR (i18n preparado, EN futuro).
 - **GitFlow estrito**: `main` e `develop` long-lived; `feature/*` -> `develop`; `release/*` -> `main`; `hotfix/*` -> `main` + `develop`. Nunca push direto em `main`.
+- **Branch por task**: cada task do board (`docs/tasks/`) implementada em `feature/TASK-NNNN-slug` a partir de `develop`, com PR de volta para `develop` (mesmo quando push direto seria permitido pela protecao de branch) — revisado por `@reviewer`, aprovado por `@qa`, e so entao `@pm` fecha a task.
 - **ADRs obrigatorios** para decisoes estruturais (DB, storage, auth, cache, particionamento de modulos), formato MADR em `docs/ADR/`.
 - **PRs** exigem checklist (descricao, testes, ADRs atualizados, screenshots se UI) e aprovacao de `@qa` (verde) antes de merge.
 
