@@ -3,7 +3,7 @@ id: TASK-0011
 title: "M7 — Observabilidade e polish"
 milestone: M7
 owner: "@frontend"
-status: Em revisao
+status: Concluida
 depends_on: [TASK-0010]
 related_docs: [docs/architecture/known-issues.md]
 ---

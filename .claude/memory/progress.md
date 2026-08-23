@@ -2,29 +2,33 @@
 
 Fonte completa e sempre atual: `docs/tasks/BOARD.md`. Este arquivo é um snapshot rápido.
 
-## Concluído
-Fase 0–2 (setup, CI/CD, Vercel deploy) · **M0** (design tokens) · **M1** (DB+Auth, login GitHub real validado em produção) · **M2+M3** (admin upload + pipeline de imagens + reordenação DnD) · **M4** (galeria pública + lightbox acessível) · **M5** (Sobre/Contato) · **M6** (SEO completo).
-
-Todas as milestones acima foram **validadas com dados reais** (não só testes unitários/mocks) — criação de projeto/foto reais no Neon+R2 via script `tsx`, verificação via `curl`/`npm run dev`, e limpeza depois. Ver `docs/tasks/done/` para o detalhamento de cada uma.
+## 🎉 Roadmap original completo (M0–M8)
+Todas as 9 milestones do plano original (Fase 0 a M8) estão **Concluídas**. Portfólio funcionalmente completo, validado com dados reais em produção (Neon+R2+Vercel+GitHub OAuth), com suite e2e real (Playwright, 6/6 passando) e revisão OWASP sem itens críticos abertos.
 
 ## Contas externas provisionadas
-Neon ✅ · GitHub OAuth App ✅ · Cloudflare R2 ✅ (bucket `portfolio-fotografico`). Pendentes (com mock funcional no lugar, não bloqueiam): **Upstash Redis** (rate limiting — hoje mock em memória) e **Resend** (envio de e-mail de contato — hoje mock com `console.log`). Trocas são isoladas quando as contas existirem.
+Neon ✅ · GitHub OAuth App ✅ · Cloudflare R2 ✅ (bucket `portfolio-fotografico`, CORS configurado). Pendentes (com mock funcional, não bloqueiam): **Upstash Redis** (rate limiting — mock em memória) e **Resend** (e-mail de contato — mock `console.log`). Trocas são isoladas quando as contas existirem.
 
-## Padrões que se repetiram — úteis saber de antemão
-1. Nova env var real: (a) `.env.local`, (b) `PATCH /v9/projects/{id}/env/{envId}?teamId=...` na Vercel (token Team não funciona com `vercel env add`/`pull`/`build --prebuilt`/`whoami` — usar sempre `vercel deploy` puro), (c) **redeploy manual** (`vercel deploy --prod`).
-2. Toda página que lê DB sem `searchParams` precisa de `export const dynamic = "force-dynamic"` (admin) ou aceitar ISR com `revalidate` + `revalidatePath` conectado nas Server Actions (público) — Next 15 pré-renderiza estático por padrão.
-3. CI (`ci.yml`/`hotfix.yml`) precisa de `DATABASE_URL` **real** (`secrets.CI_DATABASE_URL`) no job de build — páginas públicas estáticas executam queries reais durante `next build`.
-4. Testar lógica que depende de serviços reais (R2, Neon) via script `tsx` standalone quando não há como simular a UI (OAuth, drag-and-drop) — mais confiável que só unit tests com mocks.
-5. `alt` de imagem nunca pode depender só de campo opcional do usuário — sempre ter um fallback textual gerado (ex.: `"Foto de {projeto}"`).
+## Bugs reais encontrados e corrigidos ao longo do projeto (útil para não repetir)
+1. Token Vercel de conta Team quebra `pull`/`build --prebuilt`/`whoami` — usar sempre `vercel deploy` puro (build remoto).
+2. `GITHUB_TOKEN` do job de CI precisa de `permissions: pull-requests: write` para comentar em PR.
+3. `drizzle-kit` standalone não carrega `.env.local` — usar `node --env-file=.env.local`.
+4. CI/build estático precisa de `DATABASE_URL` **real** (`secrets.CI_DATABASE_URL`) — páginas públicas executam queries reais durante `next build`.
+5. `PhotoGallery` podia renderizar `alt=""` — sempre ter fallback textual gerado.
+6. **`notFound()` em rota dinâmica dentro de route group `(nome)` retorna HTTP 200** — bug real do Next 15.5.23, isolado com 8 repros mínimas, não corrigido (impacto SEO-only). Ver `docs/architecture/known-issues.md`.
+7. **CORS ausente no bucket R2** — upload direto do navegador pro R2 bloqueado silenciosamente; só um teste e2e real via Chromium pega isso (scripts Node não sofrem CORS). Corrigido via painel Cloudflare.
+8. **Vazamento potencial de secrets pro bundle client** — `getPublicUrl()` vivia no mesmo módulo que o `S3Client` (credenciais R2); isolado em módulo próprio client-safe. `STORAGE_R2_PUBLIC_URL` recategorizada como `NEXT_PUBLIC_*` (nunca foi segredo).
+9. `next start` local exige `AUTH_TRUST_HOST=true` (Vercel real já confia via proxy próprio).
+10. Testes e2e que seedam direto no DB (bypassando Server Actions) não disparam `revalidatePath` — endpoint interno `POST /api/revalidate` resolve (padrão webhook de CMS).
+11. Testes e2e que mutam estado real compartilhado (Neon+R2) **precisam rodar serial** (`workers: 1`) — paralelismo causa `beforeAll` duplicado e dados colidindo.
 
-## Concluído (cont.)
-- **M7 (observabilidade/polish)**: Vercel Analytics+Speed Insights, error/not-found/loading em todas as rotas públicas, skeletons (`GridSkeleton`). **Bug real do Next 15.5.23 encontrado e documentado** (não corrigido): `notFound()` em rota dinâmica dentro de route group retorna HTTP 200 em vez de 404 — isolado com 8 repros mínimas, ver `docs/architecture/known-issues.md`. Impacto SEO-only, não funcional.
+## Padrão geral (env vars)
+Nova env var real: (a) `.env.local`, (b) `PATCH /v9/projects/{id}/env/{envId}?teamId=...` na Vercel, (c) **redeploy manual** (`vercel deploy --prod`).
 
-## Próximo
-- **Revisão heurística de `@ux-designer`** pendente para M4 e M7 (não feita — sessão solo).
-- **TASK-0012 (M8 — e2e/hardening)**: Playwright real, revisão OWASP, trocar mocks por Upstash/Resend se as contas existirem até lá.
-- Validação externa (Google Rich Results Test) do JSON-LD fica para quando o site estiver publicamente acessível.
-- **Considerar**: mitigação do bug de `known-issues.md` (checagem de slug no middleware) se SEO virar prioridade antes de um fix upstream do Next.
+## Pendências não-bloqueantes conhecidas
+- Revisão heurística formal de `@ux-designer` (M4/M7) — sessão solo, sem esse papel ativo.
+- Validação externa do JSON-LD (Google Rich Results Test) — precisa do site publicamente acessível.
+- Bug do `known-issues.md` (notFound 200) — sem fix aplicado, mitigação sugerida documentada.
+- Trocar mocks (rate-limit → Upstash, email → Resend) quando/se as contas existirem.
 
-## Backlog (ordem prevista)
-TASK-0012 (M8) — última milestone do roadmap original.
+## Próximo (fora do roadmap original)
+Nada planejado — roadmap original 100% entregue. Próximos passos ficam a critério do usuário (ex.: popular com fotos reais, decidir sobre um release formal para `main`, revisão de UX, ou novas features).

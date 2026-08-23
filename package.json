@@ -12,7 +12,7 @@
     "type-check": "next typegen && tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:e2e": "playwright test",
+    "test:e2e": "node --env-file=.env.local ./node_modules/@playwright/test/cli.js test",
     "db:generate": "node --env-file=.env.local ./node_modules/drizzle-kit/bin.cjs generate",
     "db:migrate": "node --env-file=.env.local ./node_modules/drizzle-kit/bin.cjs migrate",
     "db:push": "node --env-file=.env.local ./node_modules/drizzle-kit/bin.cjs push",

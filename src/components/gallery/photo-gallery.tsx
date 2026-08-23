@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 
-import { getPublicUrl } from "@/lib/storage/r2";
+import { getPublicUrl } from "@/lib/storage/public-url";
 
 export interface GalleryPhoto {
   id: string;

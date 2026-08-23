@@ -19,9 +19,9 @@ export const r2 = new S3Client({
 
 const PRESIGNED_URL_EXPIRY_SECONDS = 5 * 60;
 
-export function getPublicUrl(key: string): string {
-  return `${env.STORAGE_R2_PUBLIC_URL}/${key}`;
-}
+// getPublicUrl() vive em ./public-url.ts, deliberadamente separado deste
+// módulo (que instancia o S3Client com credenciais de servidor) — ver
+// docs/architecture/known-issues.md.
 
 export async function createPresignedUploadUrl(params: {
   key: string;
