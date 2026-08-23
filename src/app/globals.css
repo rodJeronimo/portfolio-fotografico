@@ -120,3 +120,23 @@ dialog:not([open]) {
     opacity: 1;
   }
 }
+
+/*
+ * Seta de scroll do hero da Home (src/app/(public)/page.tsx). Aplicada via
+ * `motion-safe:animate-scroll-cue`, que o Tailwind já envolve em
+ * `@media (prefers-reduced-motion: no-preference)` — fora dessa media query
+ * o ícone fica estático (docs/design/public-site-redesign.md §5.1).
+ */
+@utility animate-scroll-cue {
+  animation: scroll-cue 1.6s ease-in-out infinite;
+}
+
+@keyframes scroll-cue {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(6px);
+  }
+}
