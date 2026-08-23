@@ -35,14 +35,19 @@ export async function createProject(input: CreateProjectInput): Promise<ActionRe
   });
 
   revalidatePath("/admin/projects");
+  revalidatePath("/");
   return { success: true };
 }
 
 export async function deleteProject(projectId: string): Promise<ActionResult> {
   await requireAdminSession();
 
+  const existing = await db.query.project.findFirst({ where: eq(project.id, projectId) });
+
   await db.delete(project).where(eq(project.id, projectId));
 
   revalidatePath("/admin/projects");
+  revalidatePath("/");
+  if (existing) revalidatePath(`/projetos/${existing.slug}`);
   return { success: true };
 }

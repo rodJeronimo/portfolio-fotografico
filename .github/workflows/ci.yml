@@ -56,9 +56,13 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     # Build precisa de env vars válidas (lib/env.ts valida em build time).
-    # Usa valores dummy — build não conecta de fato a Neon/R2/Auth.
+    # DATABASE_URL precisa ser real: as páginas públicas ((public)/page.tsx,
+    # projetos/[slug]) são estáticas e consultam o banco DURANTE o build
+    # (next build executa o componente para gerar o HTML) — um valor dummy
+    # derruba o build com ECONNREFUSED. As demais env vars não são tocadas
+    # em build time, então seguem dummy.
     env:
-      DATABASE_URL: "postgresql://user:pass@localhost:5432/db"
+      DATABASE_URL: ${{ secrets.CI_DATABASE_URL }}
       AUTH_SECRET: "ci-dummy-secret-ci-dummy-secret"
       AUTH_GITHUB_ID: "ci-dummy"
       AUTH_GITHUB_SECRET: "ci-dummy"
