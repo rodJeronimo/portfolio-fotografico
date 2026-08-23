@@ -66,7 +66,7 @@ princípio 1) da forma mais literal possível.
 Isso **reverte e substitui** qualquer leitura anterior deste documento que sugerisse scrim —
 esta é a versão final.
 
-### 2.1.1 Adenda (23/08/2026) — sidebar translúcida/"vazando" atrás da imagem: avaliado e recusado; alternativa adotada
+### 2.1.1 Adenda (23/08/2026) — sidebar translúcida/"vazando" atrás da imagem: avaliado e recusado por completo (decisão final do dono do site)
 
 O dono do site, vendo o mockup, pediu se a sidebar pode ficar "levemente transparente" para
 dar mais presença à imagem, deixando o conteúdo full-bleed passar visualmente por trás da
@@ -110,13 +110,19 @@ de UI sobre uma imagem cinematográfica). Fora do hero, a sidebar volta a ser um
 reservando espaço no fluxo do documento (como já especificado em §4.1), nunca sobreposta a
 conteúdo.
 
-**Resposta à pergunta "isso é opcional ou substitui a decisão atual?"**: substitui — não é
-uma variante que depende de aprovação visual do dono entre duas opções. O tratamento
-"hero full-bleed sob sidebar opaca" estritamente melhora o objetivo pedido (mais presença de
-imagem) sem nenhuma contrapartida de risco de contraste ou de complexidade relevante (é uma
-técnica CSS conhecida, escopada a um único componente) — não faz sentido oferecer a versão
-"hero confinado à coluna" como alternativa formal quando a full-bleed é estritamente melhor
-e igualmente segura. Passa a ser o tratamento padrão do hero, já refletido em §5.1.
+**Resposta à pergunta "isso é opcional ou substitui a decisão atual?"**: eu havia avaliado
+que substituiria — mas ao ver o mockup com o tratamento "hero full-bleed sob sidebar opaca"
+implementado, o dono do site **rejeitou visualmente** ("não gostei, prefiro do primeiro
+jeito") e confirmou explicitamente a preferência pela sidebar como coluna sólida de altura
+total, sem a foto vazando por trás ("a sidebar tomando toda a lateral"). Isso é decisão final
+do dono, que tem precedência sobre a minha avaliação técnica de "estritamente melhor" — a
+preferência estética/de identidade do dono do produto é o critério que vale aqui, não uma
+métrica objetiva de "mais presença de imagem". **Decisão revertida: a sidebar volta a ser
+coluna sólida (`border-r`, sem sobreposição), reservando espaço real no fluxo do documento em
+qualquer seção, inclusive o hero — nenhum "vazamento" de imagem por trás dela em lugar
+nenhum.** §4.1 e §5.1 foram corrigidos para remover o mecanismo de sobreposição; esta adenda
+fica registrada como histórico da decisão (o que foi avaliado e por que foi descartado), não
+como especificação vigente.
 
 ### 2.2 Navegação: sidebar fixa vs. header horizontal — decisão: **recomendar migração para sidebar, condicionada à validação de `@arquiteto`**
 
@@ -246,14 +252,10 @@ Substitui `src/components/site-header.tsx` **se** `@arquiteto` validar a mudanç
 - Fundo da sidebar: **sempre 100% opaco**, `bg-background` (mesmo tom "papel" do resto do
   site — **não** preto como Nonogaki; o portfólio de referência do próprio dono também usa
   fundo claro na sidebar). Nunca `bg-background/<opacidade>` nem `backdrop-blur` — decisão
-  fechada em §2.1.1 (nav translúcido sobre foto avaliado e recusado). Isso vale mesmo na
-  seção do hero (§5.1), onde a sidebar visualmente "flutua" sobre a foto — ela continua
-  opaca, é a foto que se estende por trás dela, não o contrário.
-- Borda: `border-r border-border` separando sidebar do conteúdo — **exceto** na altura do
-  hero da Home, onde não há borda (a sidebar ali se comporta como um painel flutuando sobre
-  a foto, não como uma coluna com fundo próprio adjacente a outro fundo — uma borda ali
-  cortaria visualmente a foto de forma artificial). Ver §5.1 para o detalhe de como a foto
-  do hero se estende por trás da sidebar apenas nessa seção.
+  fechada em §2.1.1 (nav translúcido sobre foto avaliado e recusado; tratamento de
+  sobreposição também revertido a pedido do dono do site — ver §2.1.1).
+- Borda: `border-r border-border` separando sidebar do conteúdo, em toda a altura da página,
+  sem exceção — inclusive na seção do hero da Home (§5.1).
 - Padding interno: `p-6 lg:p-8`.
 
 ### 4.2 Wordmark
@@ -371,19 +373,12 @@ design.
 - Se houver só 1 projeto publicado: mostra só o bloco de destaque, sem grid abaixo. Se 0
   projetos: mantém estado vazio atual.
 
-**Foto do hero "vazando" por trás da sidebar (adenda 23/08/2026, ver §2.1.1 e §4.1):** só
-nesta seção, o contêiner da foto de capa ignora a largura reservada pela sidebar e se
-estende até a borda esquerda real da viewport — ex. `lg:absolute lg:inset-y-0 lg:left-0
-lg:w-screen` dentro de um wrapper `relative`, ou equivalente via `calc()`/grid — mecanismo
-exato de implementação fica a critério de `@frontend`, o requisito de design é: a foto deve
-visualmente ocupar toda a largura da tela nessa seção, com a sidebar sobreposta por cima
-dela (não ao lado) apenas ali, **sempre 100% opaca** (nunca translúcida — decisão fechada em
-§2.1.1). Sombra sutil na borda da sidebar nessa seção (`shadow-[...]` leve, para separar
-visualmente o painel da foto por trás, já que não há mais `border-r` ali) — consistente com
-a regra de M0 "sombra só em overlays" (`guidelines.md`), já que a sidebar está,
-funcionalmente, sobrepondo a foto nesse trecho. Assim que o conteúdo desce para o grid
-(§5.2), a sidebar volta ao comportamento normal de coluna reservando espaço real (sem
-sobrepor nada) — o "vazamento" é exclusivo da altura do hero.
+**Sem sobreposição da foto atrás da sidebar (decisão final, ver §2.1.1):** o mecanismo de
+"vazamento" avaliado na adenda §2.1.1 foi rejeitado pelo dono do site ao ver o mockup. A foto
+de capa do hero fica **inteiramente dentro da área de conteúdo**, à direita da sidebar, que
+permanece uma coluna sólida (`border-r border-border`) reservando espaço real no fluxo do
+documento em toda a altura da página — sem exceção para o hero. Nenhum `position: absolute`,
+`margin` negativo ou sobreposição de z-index entre sidebar e foto em nenhuma seção.
 
 ### 5.2 Grid dos projetos restantes
 
@@ -545,13 +540,12 @@ token de cor nesta spec.
       nenhum elemento de texto posicionado por cima da imagem (verificável inspecionando
       que nenhum texto tem `position: absolute`/`fill` coincidente com a área de uma
       `<Image>`).
-- [ ] A sidebar nunca usa opacidade reduzida nem `backdrop-blur` sobre foto — fundo sempre
-      100% opaco (`bg-background` sólido), inclusive na seção do hero da Home, onde ela
-      flutua sobre a foto sem nunca ficar translúcida (decisão §2.1.1).
-- [ ] Na Home, a foto do hero se estende visualmente até a borda esquerda real da viewport
-      (por trás da sidebar) em `≥lg`; a sidebar permanece opaca por cima; fora da altura do
-      hero (grid, demais páginas), a sidebar volta a reservar espaço real no fluxo do
-      documento, sem sobrepor nenhuma foto do grid.
+- [ ] A sidebar nunca usa opacidade reduzida nem `backdrop-blur` — fundo sempre 100% opaco
+      (`bg-background` sólido) e sempre `border-r border-border`, sem exceção nenhuma tela
+      (decisão final §2.1.1).
+- [ ] A sidebar reserva espaço real no fluxo do documento em toda página pública, inclusive a
+      Home — nenhuma foto (hero, grid, lightbox) é sobreposta pela sidebar ou vice-versa;
+      nenhum `position: absolute`/margem negativa entre os dois.
 - [ ] Se a sidebar (§4) foi aprovada por `@arquiteto`: `site-sidebar.tsx` substitui
       `site-header.tsx` em `(public)/layout.tsx`; wordmark em dois pesos (nome bold +
       sobrenome/papel leve); nav vertical com 3 itens (Início/Sobre/Contato), item ativo
