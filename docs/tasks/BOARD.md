@@ -34,6 +34,16 @@ Owner: `@pm`. Fonte única de verdade do progresso. Cada linha aponta para o arq
 | [TASK-0014](done/TASK-0014-migracao-rota-fotos-projeto.md) | Migrar rota de fotos para /admin/projects/[projectId]/fotos | ADR-0006 | `@backend` | Concluida |
 | [TASK-0015](done/TASK-0015-layout-admin-dashboard.md) | Layout admin compartilhado + dashboard/hub em /admin | ADR-0006 | `@frontend` | Concluida |
 
+## Feature: Redesign fine-art do site público + destaque configurável da Home (ADR-0007)
+
+| ID | Título | Milestone | Agente | Status |
+|---|---|---|---|---|
+| [TASK-0016](backlog/TASK-0016-fundacao-sidebar-redesign.md) | Fundação tipográfica e sidebar de navegação (redesign fine-art) | Redesign | `@frontend` | Pronta |
+| [TASK-0017](backlog/TASK-0017-destaque-home-setting.md) | Destaque da Home configurável (site_settings home.featuredProjectId) | ADR-0007 | `@backend` | Pronta |
+| [TASK-0018](backlog/TASK-0018-home-destaque-grid.md) | Home: bloco de destaque e grid (redesign fine-art) | Redesign | `@frontend` | Pronta (bloqueada até TASK-0016 e TASK-0017 concluídas) |
+| [TASK-0019](backlog/TASK-0019-projeto-lightbox-sobre.md) | Página de projeto, galeria e lightbox + Sobre (redesign fine-art) | Redesign | `@frontend` | Pronta (bloqueada até TASK-0016 concluída) |
+| [TASK-0020](backlog/TASK-0020-admin-destaque-home-ui.md) | Admin: seção "Destaque da Home" em /admin/settings | ADR-0007 | `@frontend` | Pronta (bloqueada até TASK-0017 concluída) |
+
 ## Convenções
 
 - Nenhuma task muda para `Pronta` sem que suas dependências estejam `Concluida` (ou, no caso de dependência estrutural, sem validação de `@arquiteto`).
