@@ -9,6 +9,11 @@ Owner: `@ux-designer`. Consumido por `@frontend`. Este documento evolui conforme
 3. **Performance percebida = parte da UX.** LQIP blur, skeletons, sem layout shift — carregamento deve parecer instantâneo mesmo em 4G.
 4. **Consistência entre público e admin.** Mesmo design system (tokens Tailwind, componentes shadcn/ui) nas duas áreas, admin com densidade de informação maior.
 
+> **Redesign fine-art do site público (M0.1):** ver `docs/design/public-site-redesign.md`
+> para a especificação completa (tipografia editorial, estrutura de Home/projeto, motion).
+> Este documento (`guidelines.md`) reflete apenas os tokens/regras que mudaram como
+> resultado dessa spec; o detalhamento de layout/interação vive no documento dedicado.
+
 ## A validar por milestone
 
 - **M0 (Fundação)**: paleta de cores, escala tipográfica, tokens de espaçamento/breakpoints — a especificar aqui antes de `@frontend` configurar `tailwind.config`.
@@ -47,20 +52,39 @@ Contraste verificado (calculado, WCAG 2.1): `foreground`/`background` ≈ 17.5:1
 
 ### Tipografia
 
-Uma única família (Geist Sans, via `next/font`, já otimizada — sem FOUT/FOIT) para UI e conteúdo; `Geist Mono` reservado para metadados técnicos (EXIF, coordenadas) no admin. Sem serifa — mantém a interface neutra diante das fotos.
+**Atualizado (M0.1 — redesign fine-art, ver `docs/design/public-site-redesign.md`).** O site
+público passa a usar **duas famílias com papéis estritamente separados**; o admin
+permanece só com Geist Sans/Mono (não muda, ver "Área administrativa" abaixo).
 
-| Token | Tamanho | Uso |
-|---|---|---|
-| `text-xs` | 0.75rem | legendas, metadados |
-| `text-sm` | 0.875rem | texto secundário, UI de formulário |
-| `text-base` | 1rem | corpo de texto |
-| `text-lg` | 1.125rem | destaque de corpo |
-| `text-xl` | 1.25rem | subtítulo de card/projeto |
-| `text-2xl` | 1.5rem | título de seção |
-| `text-3xl` | 1.875rem | título de página (mobile) |
-| `text-4xl`–`text-5xl` | 2.25–3rem | título de página (desktop), hero |
+- **Geist Sans** — UI, navegação, corpo de texto, formulários, legendas/labels. Continua
+  sendo a família "neutra" que não compete com a foto.
+- **Fraunces** (serifada de exibição, via `next/font/google`, pesos `400`/`500`, estilos
+  `normal`/`italic`) — reservada **exclusivamente** a títulos editoriais (H1 de Home/Sobre,
+  título de projeto, legendas de card no grid da Home) e a trechos de descrição em itálico
+  (nota curatorial). Nunca usada em UI (botões, nav, formulário, breadcrumb) — ver
+  justificativa completa e mapa de uso por elemento em `public-site-redesign.md` §2.
+- `Geist Mono` inalterado — metadados técnicos (EXIF, coordenadas) no admin.
 
-Peso: 400 (corpo), 500 (ênfase/subtítulos), 600 (títulos) — nunca 700+ (evita competir visualmente com fotos). `tracking-tight` em títulos ≥ `text-3xl`.
+| Token | Tamanho | Família | Uso |
+|---|---|---|---|
+| `text-xs` | 0.75rem | Geist Sans | labels/eyebrows (uppercase, tracking largo), contadores, metadados — **sempre `text-foreground`, nunca `text-muted` neste tamanho** (ver regra de contraste abaixo) |
+| `text-sm` | 0.875rem | Geist Sans | texto secundário, UI de formulário — `text-muted` permitido a partir daqui |
+| `text-base` | 1rem | Geist Sans | corpo de texto |
+| `text-lg`–`text-xl` | 1.125–1.25rem | Geist Sans (ou Fraunces itálico para nota curatorial) | destaque de corpo, descrição de projeto |
+| `text-2xl` | 1.5rem | Geist Sans | título de seção UI (ex. "Configurações" no admin) |
+| `text-3xl` | 1.875rem | Fraunces | título de página mobile (Sobre, projeto) |
+| `text-4xl`–`text-5xl` | 2.25–3rem | Fraunces | título de card em destaque, título de projeto (tablet) |
+| `text-6xl`–`text-7xl` | 3.75–4.5rem | Fraunces | título hero da Home (desktop) — uso restrito a este único elemento |
+
+Peso Geist Sans: 400 (corpo), 500 (ênfase/subtítulos/UI) — nunca 700+ (evita competir
+visualmente com fotos). `tracking-tight` em títulos Geist Sans ≥ `text-3xl` (telas de
+admin). Peso Fraunces: 400 (padrão) ou 500 (apenas hero da Home) — **nunca `tracking-tight`
+em Fraunces**, a serifa já é compacta em corpo grande e `tracking-tight` distorce as curvas
+da fonte; usar tracking padrão (0).
+
+**Regra de contraste para labels em `text-xs`:** como `--color-muted` só está verificado em
+AA a partir de `text-sm` (ver Paleta abaixo), qualquer texto em `text-xs` — eyebrows, labels
+de galeria, contadores — usa `text-foreground` (17.5:1), nunca `text-muted`.
 
 ### Espaçamento e breakpoints
 
@@ -68,7 +92,15 @@ Escala padrão do Tailwind v4 (base 0.25rem). Breakpoints padrão (`sm` 640px, `
 
 ### Raio e elevação
 
-`--radius: 0.375rem` (`rounded-md`) em cards e botões — sutil, não decorativo (mantém sensação de "galeria", não de app consumer genérico). Sombra apenas em overlays/modais (lightbox), nunca em cards de foto (a própria foto já tem contraste suficiente).
+`--radius: 0.375rem` (`rounded-md`) em cards de UI e botões — sutil, não decorativo. Sombra
+apenas em overlays/modais (lightbox), nunca em cards de foto.
+
+**Atualizado (M0.1):** o raio **não se aplica mais a fotografias** no site público (grid da
+Home, grid de projeto, imagem do lightbox) — thumbnails e imagens passam a ter cantos retos
+(`rounded-none`), reforçando a leitura de "print emoldurado", não "card de app". O raio
+continua valendo para: chrome de UI (botões, moldura do `<dialog>` do lightbox, inputs,
+cards do admin). Ver `docs/design/public-site-redesign.md` §5 para o detalhamento por
+componente.
 
 ### Estados de foco
 
