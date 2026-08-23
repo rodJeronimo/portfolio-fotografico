@@ -84,23 +84,27 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       <nav aria-label="Breadcrumb" className="px-4 pt-6 sm:px-8">
-        <ol className="text-muted flex gap-2 text-sm">
-          <li>
-            <Link href="/" className="hover:text-foreground underline">
-              Início
-            </Link>
-          </li>
-          <li aria-hidden="true">/</li>
-          <li aria-current="page" className="text-foreground">
-            {currentProject.title}
-          </li>
-        </ol>
+        <Link
+          href="/"
+          className="text-foreground hover:text-accent inline-block text-xs font-medium tracking-[0.14em] uppercase"
+        >
+          ← Início
+        </Link>
       </nav>
 
       <div className="px-4 pt-4 sm:px-8">
-        <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">{currentProject.title}</h1>
+        {photos.length > 0 && (
+          <p className="text-foreground mb-2 text-xs font-medium tracking-[0.14em] tabular-nums uppercase">
+            {photos.length === 1 ? "1 FOTOGRAFIA" : `${photos.length} FOTOGRAFIAS`}
+          </p>
+        )}
+        <h1 className="font-serif text-3xl font-normal tracking-normal sm:text-5xl lg:text-6xl">
+          {currentProject.title}
+        </h1>
         {currentProject.description && (
-          <p className="text-muted mt-1 max-w-2xl text-sm">{currentProject.description}</p>
+          <p className="text-foreground mt-4 max-w-2xl font-serif text-lg leading-relaxed italic sm:text-xl">
+            {currentProject.description}
+          </p>
         )}
       </div>
 
