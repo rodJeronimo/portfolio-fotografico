@@ -21,11 +21,14 @@ Neon ✅ · GitHub OAuth App ✅ · Cloudflare R2 ✅ (bucket `portfolio-fotogra
 ## Concluído (cont. 2)
 - **M5 (Sobre/Contato)**: `site_settings` CRUD (`about.content`), `/sobre` e `/contato` reais, formulário com honeypot + rate limit (reaproveita o mock do M2), envio de e-mail **mockado** (`src/lib/email/`) — decisão registrada: Resend (não Formspree) para quando a conta existir, troca isolada. Validado com upsert real no Neon + `curl`.
 
+## Concluído (cont. 3)
+- **M6 (SEO)**: sitemap dinâmico, robots.txt, JSON-LD ImageGallery, OG image dinâmica (default + por-projeto usando foto de capa real), `metadataBase`. Corrigido gap real de a11y/SEO: `PhotoGallery` podia renderizar `alt=""`. Validado com projeto+foto reais + `curl` (sitemap, robots, JSON-LD, PNG da OG image, og:image apontando pro R2).
+
 ## Próximo
 - **TASK-0013**: reordenação drag-and-drop de fotos (extraída da TASK-0007, trabalho de UI substancial).
 - **Revisão heurística de `@ux-designer`** pendente para M4 (não feita nesta sessão solo).
-- **TASK-0010 (M6 — SEO)**: sem bloqueio externo conhecido, pode seguir.
-- **Conta Resend/Formspree**: só necessária para envio real de e-mail de contato — não bloqueia mais implementação (mock cobre isso).
+- **TASK-0011 (M7 — polish)**: sem bloqueio externo conhecido, pode seguir.
+- Validação externa (Google Rich Results Test) do JSON-LD fica para quando o site estiver publicamente acessível — não testável offline.
 
 ## Backlog (ordem prevista)
-TASK-0010 (M6 SEO) → TASK-0013 (DnD) → TASK-0011 (M7 polish) → TASK-0012 (M8 e2e/hardening, inclui trocar rate-limit mock por Upstash real e email mock por Resend real se as contas existirem até lá).
+TASK-0011 (M7 polish) → TASK-0013 (DnD) → TASK-0012 (M8 e2e/hardening, inclui trocar rate-limit mock por Upstash real e email mock por Resend real se as contas existirem até lá).

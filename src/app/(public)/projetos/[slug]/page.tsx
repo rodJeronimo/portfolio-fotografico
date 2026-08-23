@@ -5,6 +5,8 @@ import type { Metadata } from "next";
 
 import { db } from "@/db/client";
 import { project, photo, projectPhoto } from "@/db/schema";
+import { env } from "@/lib/env";
+import { getPublicUrl } from "@/lib/storage/r2";
 import { PhotoGallery, type GalleryPhoto } from "@/components/gallery/photo-gallery";
 
 // Fallback de segurança — invalidação real acontece via revalidatePath no upload/CRUD (ver admin/*/actions.ts).
@@ -14,23 +16,8 @@ async function getProject(slug: string) {
   return db.query.project.findFirst({ where: eq(project.slug, slug) });
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}): Promise<Metadata> {
-  const { slug } = await params;
-  const currentProject = await getProject(slug);
-  if (!currentProject) return {};
-  return { title: currentProject.title, description: currentProject.description ?? undefined };
-}
-
-export default async function ProjectPage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params;
-  const currentProject = await getProject(slug);
-  if (!currentProject) notFound();
-
-  const photos: GalleryPhoto[] = await db
+async function getPhotos(projectId: string): Promise<GalleryPhoto[]> {
+  return db
     .select({
       id: photo.id,
       title: photo.title,
@@ -41,11 +28,61 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
     })
     .from(projectPhoto)
     .innerJoin(photo, eq(projectPhoto.photoId, photo.id))
-    .where(eq(projectPhoto.projectId, currentProject.id))
+    .where(eq(projectPhoto.projectId, projectId))
     .orderBy(asc(projectPhoto.displayOrder));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const currentProject = await getProject(slug);
+  if (!currentProject) return {};
+
+  const photos = await getPhotos(currentProject.id);
+  const cover = photos[0];
+
+  return {
+    title: currentProject.title,
+    description: currentProject.description ?? undefined,
+    openGraph: {
+      title: currentProject.title,
+      description: currentProject.description ?? undefined,
+      ...(cover
+        ? { images: [{ url: getPublicUrl(`${cover.storageKey}/medium.webp`) }] }
+        : {}),
+    },
+  };
+}
+
+export default async function ProjectPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const currentProject = await getProject(slug);
+  if (!currentProject) notFound();
+
+  const photos = await getPhotos(currentProject.id);
+
+  const pageUrl = `${env.NEXT_PUBLIC_SITE_URL}/projetos/${currentProject.slug}`;
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ImageGallery",
+    name: currentProject.title,
+    description: currentProject.description ?? undefined,
+    url: pageUrl,
+    associatedMedia: photos.map((p) => ({
+      "@type": "ImageObject",
+      contentUrl: getPublicUrl(`${p.storageKey}/medium.webp`),
+      thumbnailUrl: getPublicUrl(`${p.storageKey}/thumb.webp`),
+      name: p.title || `Foto de ${currentProject.title}`,
+    })),
+  };
 
   return (
     <main>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+
       <nav aria-label="Breadcrumb" className="px-4 pt-6 sm:px-8">
         <ol className="text-muted flex gap-2 text-sm">
           <li>
@@ -67,7 +104,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
         )}
       </div>
 
-      <PhotoGallery photos={photos} />
+      <PhotoGallery photos={photos} projectTitle={currentProject.title} />
     </main>
   );
 }
