@@ -2,7 +2,7 @@
 
 import { randomUUID } from "node:crypto";
 import { revalidatePath } from "next/cache";
-import { eq, max } from "drizzle-orm";
+import { and, eq, max } from "drizzle-orm";
 
 import { db } from "@/db/client";
 import { photo, project, projectPhoto } from "@/db/schema";
@@ -150,4 +150,33 @@ async function revalidatePublicProject(projectId: string): Promise<void> {
   const p = await db.query.project.findFirst({ where: eq(project.id, projectId) });
   revalidatePath("/");
   if (p) revalidatePath(`/projetos/${p.slug}`);
+}
+
+/**
+ * Persiste a nova ordem de exibição das fotos de um projeto (TASK-0013 —
+ * drag-and-drop no admin). `orderedPhotoIds` é a lista completa de IDs na
+ * ordem final desejada; grava display_order = índice na lista.
+ */
+export async function updatePhotoOrder(
+  projectId: string,
+  orderedPhotoIds: string[],
+): Promise<ActionResult> {
+  await requireAdminSession();
+
+  if (orderedPhotoIds.length === 0) {
+    return { success: true };
+  }
+
+  await Promise.all(
+    orderedPhotoIds.map((photoId, index) =>
+      db
+        .update(projectPhoto)
+        .set({ displayOrder: index })
+        .where(and(eq(projectPhoto.projectId, projectId), eq(projectPhoto.photoId, photoId))),
+    ),
+  );
+
+  revalidatePath("/admin/fotos");
+  await revalidatePublicProject(projectId).catch(() => {});
+  return { success: true };
 }
