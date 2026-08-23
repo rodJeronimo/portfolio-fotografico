@@ -3,7 +3,7 @@ id: TASK-0004
 title: "M0 — Fundação: design tokens, layout root, fontes"
 milestone: M0
 owner: "@frontend"
-status: Em revisao
+status: Concluida
 depends_on: [TASK-0001]
 related_docs: [docs/design/guidelines.md, docs/architecture/folder-structure.md]
 ---
@@ -33,3 +33,4 @@ TASK-0001. Guidelines de `@ux-designer` (`docs/design/guidelines.md`) precisam e
 - **`src/app/page.tsx`**: placeholder mínimo usando os tokens (título + descrição) — a galeria real é escopo de M4 (TASK-0008), não desta task.
 - **Desvio de escopo**: route groups `app/(public)/[locale]/layout.tsx` **não** foram criados agora — introduzi-los sem páginas reais seria estrutura prematura. Ficam para quando as rotas públicas (M4) e admin (M1/M2) forem implementadas de fato, usando os tokens definidos aqui.
 - **Validação**: `npm run lint`, `npm run type-check`, `npm run build` verdes; smoke test do `npm run dev` confirmou renderização (HTTP 200, `<h1>` correto).
+- **Merge**: PR #3 aprovado pelo usuário e mesclado (squash) em `develop` em 2026-08-22.
