@@ -1,0 +1,34 @@
+# Memória — Progresso (snapshot)
+
+Fonte completa e sempre atual: `docs/tasks/BOARD.md`. Este arquivo é um snapshot rápido.
+
+## 🎉 Roadmap original completo (M0–M8)
+Todas as 9 milestones do plano original (Fase 0 a M8) estão **Concluídas**. Portfólio funcionalmente completo, validado com dados reais em produção (Neon+R2+Vercel+GitHub OAuth), com suite e2e real (Playwright, 6/6 passando) e revisão OWASP sem itens críticos abertos.
+
+## Contas externas provisionadas
+Neon ✅ · GitHub OAuth App ✅ · Cloudflare R2 ✅ (bucket `portfolio-fotografico`, CORS configurado). Pendentes (com mock funcional, não bloqueiam): **Upstash Redis** (rate limiting — mock em memória) e **Resend** (e-mail de contato — mock `console.log`). Trocas são isoladas quando as contas existirem.
+
+## Bugs reais encontrados e corrigidos ao longo do projeto (útil para não repetir)
+1. Token Vercel de conta Team quebra `pull`/`build --prebuilt`/`whoami` — usar sempre `vercel deploy` puro (build remoto).
+2. `GITHUB_TOKEN` do job de CI precisa de `permissions: pull-requests: write` para comentar em PR.
+3. `drizzle-kit` standalone não carrega `.env.local` — usar `node --env-file=.env.local`.
+4. CI/build estático precisa de `DATABASE_URL` **real** (`secrets.CI_DATABASE_URL`) — páginas públicas executam queries reais durante `next build`.
+5. `PhotoGallery` podia renderizar `alt=""` — sempre ter fallback textual gerado.
+6. **`notFound()` em rota dinâmica dentro de route group `(nome)` retorna HTTP 200** — bug real do Next 15.5.23, isolado com 8 repros mínimas, não corrigido (impacto SEO-only). Ver `docs/architecture/known-issues.md`.
+7. **CORS ausente no bucket R2** — upload direto do navegador pro R2 bloqueado silenciosamente; só um teste e2e real via Chromium pega isso (scripts Node não sofrem CORS). Corrigido via painel Cloudflare.
+8. **Vazamento potencial de secrets pro bundle client** — `getPublicUrl()` vivia no mesmo módulo que o `S3Client` (credenciais R2); isolado em módulo próprio client-safe. `STORAGE_R2_PUBLIC_URL` recategorizada como `NEXT_PUBLIC_*` (nunca foi segredo).
+9. `next start` local exige `AUTH_TRUST_HOST=true` (Vercel real já confia via proxy próprio).
+10. Testes e2e que seedam direto no DB (bypassando Server Actions) não disparam `revalidatePath` — endpoint interno `POST /api/revalidate` resolve (padrão webhook de CMS).
+11. Testes e2e que mutam estado real compartilhado (Neon+R2) **precisam rodar serial** (`workers: 1`) — paralelismo causa `beforeAll` duplicado e dados colidindo.
+
+## Padrão geral (env vars)
+Nova env var real: (a) `.env.local`, (b) `PATCH /v9/projects/{id}/env/{envId}?teamId=...` na Vercel, (c) **redeploy manual** (`vercel deploy --prod`).
+
+## Pendências não-bloqueantes conhecidas
+- Revisão heurística formal de `@ux-designer` (M4/M7) — sessão solo, sem esse papel ativo.
+- Validação externa do JSON-LD (Google Rich Results Test) — precisa do site publicamente acessível.
+- Bug do `known-issues.md` (notFound 200) — sem fix aplicado, mitigação sugerida documentada.
+- Trocar mocks (rate-limit → Upstash, email → Resend) quando/se as contas existirem.
+
+## Próximo (fora do roadmap original)
+Nada planejado — roadmap original 100% entregue. Próximos passos ficam a critério do usuário (ex.: popular com fotos reais, decidir sobre um release formal para `main`, revisão de UX, ou novas features).

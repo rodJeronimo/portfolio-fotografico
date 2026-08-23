@@ -1,0 +1,65 @@
+name: Hotfix
+
+on:
+  push:
+    branches: ["hotfix/**"]
+
+concurrency:
+  group: hotfix-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci:
+    name: CI (lint, type-check, test, build)
+    runs-on: ubuntu-latest
+    # DATABASE_URL precisa ser real — ver nota equivalente em ci.yml.
+    env:
+      DATABASE_URL: ${{ secrets.CI_DATABASE_URL }}
+      AUTH_SECRET: "ci-dummy-secret-ci-dummy-secret"
+      AUTH_GITHUB_ID: "ci-dummy"
+      AUTH_GITHUB_SECRET: "ci-dummy"
+      ADMIN_EMAILS: "ci@example.com"
+      STORAGE_R2_ACCOUNT_ID: "ci-dummy"
+      STORAGE_R2_ACCESS_KEY_ID: "ci-dummy"
+      STORAGE_R2_SECRET_ACCESS_KEY: "ci-dummy"
+      STORAGE_R2_BUCKET_NAME: "ci-dummy"
+      NEXT_PUBLIC_STORAGE_R2_PUBLIC_URL: "https://example.com"
+      AUTH_TRUST_HOST: "true"
+      UPSTASH_REDIS_REST_URL: "https://example.com"
+      UPSTASH_REDIS_REST_TOKEN: "ci-dummy"
+      NEXT_PUBLIC_SITE_URL: "https://example.com"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: "npm"
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run type-check
+      - run: npm run test
+      - run: npm run build
+
+  deploy-emergency:
+    name: Deploy emergencial (Vercel, preview do hotfix)
+    needs: ci
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: "npm"
+      - run: npm install --global vercel@latest
+      # Deploy remoto — ver nota em preview.yml sobre por que nao usamos
+      # `vercel pull`/`vercel build --prebuilt` neste projeto.
+      - name: Deploy preview do hotfix (validação antes do PR para main)
+        run: vercel deploy --token=${{ secrets.VERCEL_TOKEN }} --yes
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+# Nota: o deploy de PRODUÇÃO do hotfix acontece via release.yml quando o PR
+# hotfix/* -> main é mergeado (push em main). A sincronização de volta para
+# develop também é automática nesse ponto (job sync-develop de release.yml),
+# atendendo "hotfix/* -> main + develop" do GitFlow sem duplicar lógica de deploy.
