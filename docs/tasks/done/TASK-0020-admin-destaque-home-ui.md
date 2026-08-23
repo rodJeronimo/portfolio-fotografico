@@ -3,7 +3,7 @@ id: TASK-0020
 title: "Admin: seção 'Destaque da Home' em /admin/settings"
 milestone: ADR-0007
 owner: "@frontend"
-status: Pronta
+status: Concluida
 depends_on: [TASK-0017]
 related_docs: [docs/ADR/0007-home-featured-project-setting.md, docs/design/admin-dashboard.md]
 ---
@@ -44,24 +44,24 @@ camada visual/interação sobre essa decisão já fechada.
 
 ## Critérios de aceite
 
-- [ ] Given `/admin/settings`, When a página carrega, Then a seção "Destaque da Home"
+- [x] Given `/admin/settings`, When a página carrega, Then a seção "Destaque da Home"
       aparece abaixo de "Sobre Mim", com estado de submit independente.
-- [ ] Given o select de projeto em destaque, When inspecionado, Then a primeira opção é
+- [x] Given o select de projeto em destaque, When inspecionado, Then a primeira opção é
       "Automático (ordem de exibição)" (`value=""`), seguida de todos os projetos no formato
       "{título} (/{slug})", ordenados por `displayOrder`.
-- [ ] Given o operador troca a seleção do select, When a preview atualiza, Then reflete a
+- [x] Given o operador troca a seleção do select, When a preview atualiza, Then reflete a
       capa do projeto selecionado (inclusive quando "Automático" está selecionado, mostrando
       a capa do projeto que seria escolhido hoje) sem nova requisição de rede.
-- [ ] Given um projeto sem foto de capa é selecionado, When a preview renderiza, Then mostra
+- [x] Given um projeto sem foto de capa é selecionado, When a preview renderiza, Then mostra
       o placeholder "Sem foto" sem quebrar o formulário.
-- [ ] Given 0 projetos cadastrados, When a seção renderiza, Then o select fica `disabled` com
+- [x] Given 0 projetos cadastrados, When a seção renderiza, Then o select fica `disabled` com
       texto explicando o motivo, em vez de esconder a seção.
-- [ ] Given o operador salva "Destaque da Home", When a submissão é concluída, Then o
+- [x] Given o operador salva "Destaque da Home", When a submissão é concluída, Then o
       estado de sucesso/erro não afeta a seção "Sobre Mim" e vice-versa.
-- [ ] Select e botão "Salvar" desta seção têm `<label htmlFor>` associado, anel de foco
+- [x] Select e botão "Salvar" desta seção têm `<label htmlFor>` associado, anel de foco
       visível e alvo de toque ≥44×44px; nenhum token novo de cor/tipografia/raio introduzido
       (reaproveita o vocabulário visual já em uso no admin, `docs/design/guidelines.md`).
-- [ ] `lint` e `type-check` passam sem erros.
+- [x] `lint` e `type-check` passam sem erros.
 
 ## Dependências
 
@@ -71,9 +71,16 @@ elas.
 
 ## Resultado
 
-*(preenchido pelo @pm ao final, com base no relato do agente responsável e na aprovação de @qa/@reviewer)*
-
-- Entregue em:
-- Desvios em relação aos critérios de aceite:
-- PR/commit relacionado:
+- Entregue em: 2026-08-23
+- Resumo: seção "Destaque da Home" adicionada em `/admin/settings`, com `<select>` nativo
+  (opção "Automático" + projetos por `displayOrder`) e preview de capa 64×48 client-side,
+  sem requisição de rede adicional ao trocar seleção. `@reviewer` e `@qa` aprovaram com
+  ressalvas não bloqueantes.
+- Desvios em relação aos critérios de aceite: nenhum desvio funcional; ressalvas cosméticas
+  registradas como débitos (ver Pendências).
+- PR/commit relacionado: PR #26 (merged em `develop`).
 - Pendências remanescentes:
+  - Débito cosmético: no estado de 0 projetos, o texto de apoio padrão e o texto de erro
+    aparecem simultaneamente em vez do segundo substituir o primeiro.
+  - Débito de cobertura: sem teste de componente para o formulário novo — consistente com o
+    padrão já existente no projeto (não é regressão), mas registrado para revisão futura.

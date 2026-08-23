@@ -40,9 +40,9 @@ Owner: `@pm`. Fonte única de verdade do progresso. Cada linha aponta para o arq
 |---|---|---|---|---|
 | [TASK-0016](done/TASK-0016-fundacao-sidebar-redesign.md) | Fundação tipográfica e sidebar de navegação (redesign fine-art) | Redesign | `@frontend` | Concluida |
 | [TASK-0017](done/TASK-0017-destaque-home-setting.md) | Destaque da Home configurável (site_settings home.featuredProjectId) | ADR-0007 | `@backend` | Concluida |
-| [TASK-0018](backlog/TASK-0018-home-destaque-grid.md) | Home: bloco de destaque e grid (redesign fine-art) | Redesign | `@frontend` | Pronta |
-| [TASK-0019](backlog/TASK-0019-projeto-lightbox-sobre.md) | Página de projeto, galeria e lightbox + Sobre (redesign fine-art) | Redesign | `@frontend` | Pronta |
-| [TASK-0020](backlog/TASK-0020-admin-destaque-home-ui.md) | Admin: seção "Destaque da Home" em /admin/settings | ADR-0007 | `@frontend` | Pronta |
+| [TASK-0018](done/TASK-0018-home-destaque-grid.md) | Home: bloco de destaque e grid (redesign fine-art) | Redesign | `@frontend` | Concluida |
+| [TASK-0019](done/TASK-0019-projeto-lightbox-sobre.md) | Página de projeto, galeria e lightbox + Sobre (redesign fine-art) | Redesign | `@frontend` | Concluida |
+| [TASK-0020](done/TASK-0020-admin-destaque-home-ui.md) | Admin: seção "Destaque da Home" em /admin/settings | ADR-0007 | `@frontend` | Concluida |
 
 ## Convenções
 

@@ -3,7 +3,7 @@ id: TASK-0018
 title: "Home: bloco de destaque e grid (redesign fine-art)"
 milestone: Redesign
 owner: "@frontend"
-status: Pronta
+status: Concluida
 depends_on: [TASK-0016, TASK-0017]
 related_docs: [docs/design/public-site-redesign.md, docs/ADR/0007-home-featured-project-setting.md]
 ---
@@ -42,22 +42,22 @@ sempre visíveis, conforme `docs/design/public-site-redesign.md` §5.
 
 ## Critérios de aceite
 
-- [ ] Given a Home carrega, When não há `home.featuredProjectId` configurado, Then o
+- [x] Given a Home carrega, When não há `home.featuredProjectId` configurado, Then o
       destaque é o primeiro projeto por `displayOrder` (comportamento automático).
-- [ ] Given `home.featuredProjectId` aponta para um projeto válido, When a Home carrega,
+- [x] Given `home.featuredProjectId` aponta para um projeto válido, When a Home carrega,
       Then o destaque é esse projeto (não necessariamente o primeiro por `displayOrder`).
-- [ ] Given o bloco de destaque renderiza, When inspecionado, Then nenhum texto está
+- [x] Given o bloco de destaque renderiza, When inspecionado, Then nenhum texto está
       sobreposto à área de pixels da foto (título/eyebrow sempre abaixo da imagem).
-- [ ] Given `prefers-reduced-motion: reduce`, When a Home carrega, Then a seta de scroll não
+- [x] Given `prefers-reduced-motion: reduce`, When a Home carrega, Then a seta de scroll não
       anima (fica estática).
-- [ ] Given o grid de projetos restantes, When renderizado, Then nenhuma foto tem
+- [x] Given o grid de projetos restantes, When renderizado, Then nenhuma foto tem
       `border`/`rounded-*` (cantos retos) e a legenda (índice + travessão + título) está
       sempre visível, sem depender de hover.
-- [ ] Given 1 projeto publicado, When a Home carrega, Then só o bloco de destaque aparece
+- [x] Given 1 projeto publicado, When a Home carrega, Then só o bloco de destaque aparece
       (sem grid abaixo). Given 0 projetos, Then mantém o estado vazio atual.
-- [ ] Apenas a imagem do bloco de destaque tem `priority`/`fetchpriority="high"`; demais
+- [x] Apenas a imagem do bloco de destaque tem `priority`/`fetchpriority="high"`; demais
       imagens mantêm `loading="lazy"`.
-- [ ] `lint` e `type-check` passam sem erros.
+- [x] `lint` e `type-check` passam sem erros.
 
 ## Dependências
 
@@ -66,9 +66,15 @@ TASK-0016 (sidebar/layout/tokens) e TASK-0017 (`getFeaturedProject()`) — ambas
 
 ## Resultado
 
-*(preenchido pelo @pm ao final, com base no relato do agente responsável e na aprovação de @qa/@reviewer)*
-
-- Entregue em:
-- Desvios em relação aos critérios de aceite:
-- PR/commit relacionado:
-- Pendências remanescentes:
+- Entregue em: 2026-08-23
+- Resumo: bloco de destaque da Home implementado via `getFeaturedProject()` (TASK-0017),
+  grid dos projetos restantes com cantos retos e legenda sempre visível, seta de scroll
+  acessível (âncora real, `aria-hidden` no ícone, texto `sr-only`, animação só sob
+  `prefers-reduced-motion: no-preference`). `@reviewer` e `@qa` aprovaram sem ressalvas
+  bloqueantes.
+- Desvios em relação aos critérios de aceite: nenhum. Durante a implementação o agente
+  relatou um incidente de leitura acidental de um diretório compartilhado; `@reviewer` e
+  `@qa` confirmaram que o diff final ficou limpo, sem resíduo — apenas os 3 arquivos
+  esperados foram alterados.
+- PR/commit relacionado: PR #28 (merged em `develop`).
+- Pendências remanescentes: nenhuma.
