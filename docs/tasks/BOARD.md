@@ -27,6 +27,13 @@ Owner: `@pm`. Fonte única de verdade do progresso. Cada linha aponta para o arq
 | [TASK-0011](done/TASK-0011-m7-observabilidade-polish.md) | Observabilidade e polish | M7 | `@frontend` | Concluida |
 | [TASK-0012](done/TASK-0012-m8-e2e-hardening.md) | Testes e2e e hardening final | M8 | `@qa` | Concluida |
 
+## Feature: Dashboard admin e navegação (ADR-0006)
+
+| ID | Título | Milestone | Agente | Status |
+|---|---|---|---|---|
+| [TASK-0014](backlog/TASK-0014-migracao-rota-fotos-projeto.md) | Migrar rota de fotos para /admin/projects/[projectId]/fotos | ADR-0006 | `@backend` | Pronta |
+| [TASK-0015](backlog/TASK-0015-layout-admin-dashboard.md) | Layout admin compartilhado + dashboard/hub em /admin | ADR-0006 | `@frontend` | Pronta |
+
 ## Convenções
 
 - Nenhuma task muda para `Pronta` sem que suas dependências estejam `Concluida` (ou, no caso de dependência estrutural, sem validação de `@arquiteto`).
