@@ -66,6 +66,58 @@ princípio 1) da forma mais literal possível.
 Isso **reverte e substitui** qualquer leitura anterior deste documento que sugerisse scrim —
 esta é a versão final.
 
+### 2.1.1 Adenda (23/08/2026) — sidebar translúcida/"vazando" atrás da imagem: avaliado e recusado; alternativa adotada
+
+O dono do site, vendo o mockup, pediu se a sidebar pode ficar "levemente transparente" para
+dar mais presença à imagem, deixando o conteúdo full-bleed passar visualmente por trás da
+coluna da sidebar em vez de uma coluna sólida de `17rem` que a empurra. Avaliei as duas
+perguntas que isso levanta — (a) existe uma versão tecnicamente segura de nav translúcido
+sobre foto? (b) dá pra resolver a dor real (imagem confinada) sem tocar a decisão de §2.1?
+
+**(a) Nav translúcido/glass sobre foto — recusado como tratamento padrão.** Fiz as contas:
+com `backdrop-blur` + `bg-background/α`, como o token `--color-background` já é quase
+branco (L≈0.96, tema claro) ou quase preto (tema escuro), mesmo uma opacidade moderada
+(`α` ~0.3–0.4) já garante AA contra a maioria dos tons de foto plausíveis, matematicamente
+— então "existe uma versão segura" na teoria. Mas rejeito adotar isso como tratamento padrão
+por um motivo operacional, não só estético: **o admin permite upload de fotos novas sem
+deploy e sem revisão de design** (`.claude/CLAUDE.md`: "módulo administrativo... upload de
+fotos... sem novo deploy"). Um painel de nav translúcido depende do conteúdo de *cada nova
+foto que o dono subir no futuro* para continuar legível — uma foto com uma área de alto
+contraste local exatamente atrás de uma letra do nav (ex. um ponto de luz forte numa cena
+de floresta escura) pode furar o cálculo médio mesmo com blur, e ninguém vai testar isso a
+cada upload. Isso é exatamente o risco que §2.1 já descartou para legendas — aqui é pior,
+porque nav é elemento persistente e funcional (não uma legenda secundária), então a barra de
+exigência de confiabilidade é mais alta, não mais baixa. **Decisão: não adotar nav
+translúcido/glass em lugar nenhum do site.**
+
+**(b) Resolver a dor real sem reabrir §2.1 — adotado.** O pedido de fundo não é
+"transparência" por si — é "a imagem não deveria parecer confinada por uma coluna sólida".
+Isso é resolvível sem tocar nav nenhum: **a foto de capa do hero da Home (§5.1) passa a se
+estender visualmente por trás da faixa da sidebar** (full-bleed até a borda esquerda real da
+viewport), enquanto a **sidebar continua 100% opaca**, sobreposta por cima dessa faixa da
+foto só naquela seção — ou seja, é a *imagem* que "vaza" para trás da coluna, não o nav que
+fica translúcido sobre ela. Do ponto de vista do usuário o efeito visual pedido (a foto
+"maior", menos confinada) é entregue; do ponto de vista de §2.1 nada muda — nenhum pixel de
+texto se torna visível sobre foto, porque a sidebar continua sólida (sem transparência) onde
+quer que esteja posicionada. Detalhado em §4.1 e §5.1.
+
+Esse tratamento é **restrito à seção do hero** — não se aplica ao grid de projetos abaixo
+nem a nenhuma outra tela: um grid tem várias fotos discretas lado a lado, e deixá-las
+"vazarem" atrás da sidebar cortaria a coluna mais à esquerda do grid (perda de conteúdo
+visível), diferente do hero (uma única foto grande, onde perder ~272px na borda esquerda
+por trás de um painel opaco é visualmente irrelevante — é o mesmo raciocínio de letterboxing
+de UI sobre uma imagem cinematográfica). Fora do hero, a sidebar volta a ser uma coluna real
+reservando espaço no fluxo do documento (como já especificado em §4.1), nunca sobreposta a
+conteúdo.
+
+**Resposta à pergunta "isso é opcional ou substitui a decisão atual?"**: substitui — não é
+uma variante que depende de aprovação visual do dono entre duas opções. O tratamento
+"hero full-bleed sob sidebar opaca" estritamente melhora o objetivo pedido (mais presença de
+imagem) sem nenhuma contrapartida de risco de contraste ou de complexidade relevante (é uma
+técnica CSS conhecida, escopada a um único componente) — não faz sentido oferecer a versão
+"hero confinado à coluna" como alternativa formal quando a full-bleed é estritamente melhor
+e igualmente segura. Passa a ser o tratamento padrão do hero, já refletido em §5.1.
+
 ### 2.2 Navegação: sidebar fixa vs. header horizontal — decisão: **recomendar migração para sidebar, condicionada à validação de `@arquiteto`**
 
 Recomendo adotar a sidebar fixa à esquerda, pelos motivos:
@@ -191,12 +243,17 @@ Substitui `src/components/site-header.tsx` **se** `@arquiteto` validar a mudanç
 - Layout via flexbox em `(public)/layout.tsx`: `lg:flex`, sidebar `lg:w-[17rem] lg:shrink-0
   lg:sticky lg:top-0 lg:h-dvh`, conteúdo `flex-1 min-w-0`. Abaixo de `lg`, layout normal em
   coluna (sidebar vira barra superior, ver §4.4).
-- Fundo da sidebar: `bg-background` (mesmo tom "papel" do resto do site — **não** preto como
-  Nonogaki; o portfólio de referência do próprio dono também usa fundo claro na sidebar,
-  então não há conflito aqui, e evita o custo de recalcular AA para um tema escuro
-  permanente em todo o site).
-- Borda: `border-r border-border` separando sidebar do conteúdo (mesma linguagem de divisor
-  já usada em `border-b` no header atual e no nav do admin).
+- Fundo da sidebar: **sempre 100% opaco**, `bg-background` (mesmo tom "papel" do resto do
+  site — **não** preto como Nonogaki; o portfólio de referência do próprio dono também usa
+  fundo claro na sidebar). Nunca `bg-background/<opacidade>` nem `backdrop-blur` — decisão
+  fechada em §2.1.1 (nav translúcido sobre foto avaliado e recusado). Isso vale mesmo na
+  seção do hero (§5.1), onde a sidebar visualmente "flutua" sobre a foto — ela continua
+  opaca, é a foto que se estende por trás dela, não o contrário.
+- Borda: `border-r border-border` separando sidebar do conteúdo — **exceto** na altura do
+  hero da Home, onde não há borda (a sidebar ali se comporta como um painel flutuando sobre
+  a foto, não como uma coluna com fundo próprio adjacente a outro fundo — uma borda ali
+  cortaria visualmente a foto de forma artificial). Ver §5.1 para o detalhe de como a foto
+  do hero se estende por trás da sidebar apenas nessa seção.
 - Padding interno: `p-6 lg:p-8`.
 
 ### 4.2 Wordmark
@@ -313,6 +370,20 @@ design.
 - Imagem do hero é a única com `priority`/`fetchpriority="high"` na Home (LCP element).
 - Se houver só 1 projeto publicado: mostra só o bloco de destaque, sem grid abaixo. Se 0
   projetos: mantém estado vazio atual.
+
+**Foto do hero "vazando" por trás da sidebar (adenda 23/08/2026, ver §2.1.1 e §4.1):** só
+nesta seção, o contêiner da foto de capa ignora a largura reservada pela sidebar e se
+estende até a borda esquerda real da viewport — ex. `lg:absolute lg:inset-y-0 lg:left-0
+lg:w-screen` dentro de um wrapper `relative`, ou equivalente via `calc()`/grid — mecanismo
+exato de implementação fica a critério de `@frontend`, o requisito de design é: a foto deve
+visualmente ocupar toda a largura da tela nessa seção, com a sidebar sobreposta por cima
+dela (não ao lado) apenas ali, **sempre 100% opaca** (nunca translúcida — decisão fechada em
+§2.1.1). Sombra sutil na borda da sidebar nessa seção (`shadow-[...]` leve, para separar
+visualmente o painel da foto por trás, já que não há mais `border-r` ali) — consistente com
+a regra de M0 "sombra só em overlays" (`guidelines.md`), já que a sidebar está,
+funcionalmente, sobrepondo a foto nesse trecho. Assim que o conteúdo desce para o grid
+(§5.2), a sidebar volta ao comportamento normal de coluna reservando espaço real (sem
+sobrepor nada) — o "vazamento" é exclusivo da altura do hero.
 
 ### 5.2 Grid dos projetos restantes
 
@@ -474,6 +545,13 @@ token de cor nesta spec.
       nenhum elemento de texto posicionado por cima da imagem (verificável inspecionando
       que nenhum texto tem `position: absolute`/`fill` coincidente com a área de uma
       `<Image>`).
+- [ ] A sidebar nunca usa opacidade reduzida nem `backdrop-blur` sobre foto — fundo sempre
+      100% opaco (`bg-background` sólido), inclusive na seção do hero da Home, onde ela
+      flutua sobre a foto sem nunca ficar translúcida (decisão §2.1.1).
+- [ ] Na Home, a foto do hero se estende visualmente até a borda esquerda real da viewport
+      (por trás da sidebar) em `≥lg`; a sidebar permanece opaca por cima; fora da altura do
+      hero (grid, demais páginas), a sidebar volta a reservar espaço real no fluxo do
+      documento, sem sobrepor nenhuma foto do grid.
 - [ ] Se a sidebar (§4) foi aprovada por `@arquiteto`: `site-sidebar.tsx` substitui
       `site-header.tsx` em `(public)/layout.tsx`; wordmark em dois pesos (nome bold +
       sobrenome/papel leve); nav vertical com 3 itens (Início/Sobre/Contato), item ativo
