@@ -12,7 +12,14 @@ export async function createAuthenticatedContext(browser: Browser, email: string
   const secret = process.env.AUTH_SECRET;
   if (!secret) throw new Error("AUTH_SECRET não definido no ambiente de teste.");
 
-  const cookieName = "authjs.session-token";
+  // Em HTTPS o Auth.js usa o prefixo `__Secure-` no nome do cookie (e é
+  // esse nome que ele usa como salt pra derivar a criptografia do JWE) —
+  // contra o preview remoto (https://*.vercel.app) precisa bater os dois,
+  // senão o cookie nem é aceito como sessão válida pela aplicação.
+  const baseUrl = process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:3000";
+  const isSecure = baseUrl.startsWith("https://");
+  const cookieName = isSecure ? "__Secure-authjs.session-token" : "authjs.session-token";
+
   const token = await encode({
     secret,
     salt: cookieName,
@@ -28,9 +35,9 @@ export async function createAuthenticatedContext(browser: Browser, email: string
     {
       name: cookieName,
       value: token,
-      domain: "localhost",
-      path: "/",
+      url: baseUrl,
       httpOnly: true,
+      secure: isSecure,
       sameSite: "Lax",
     },
   ]);
