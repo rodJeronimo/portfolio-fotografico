@@ -3,7 +3,7 @@ id: TASK-0006
 title: "M2 — Admin upload MVP"
 milestone: M2
 owner: "@backend"
-status: Em revisao
+status: Concluida
 depends_on: [TASK-0005]
 related_docs: [docs/architecture/upload-flow.md, docs/architecture/security.md]
 ---
