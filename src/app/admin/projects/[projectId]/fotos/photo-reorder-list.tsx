@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 
-import { updatePhotoOrder, deletePhoto } from "@/app/admin/fotos/actions";
+import { updatePhotoOrder, deletePhoto } from "@/app/admin/projects/[projectId]/fotos/actions";
 import { getPublicUrl } from "@/lib/storage/public-url";
 
 export interface ReorderablePhoto {

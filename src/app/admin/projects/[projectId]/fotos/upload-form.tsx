@@ -2,7 +2,7 @@
 
 import { useRef, useState, useTransition } from "react";
 
-import { requestPhotoUpload, confirmPhotoUpload } from "@/app/admin/fotos/actions";
+import { requestPhotoUpload, confirmPhotoUpload } from "@/app/admin/projects/[projectId]/fotos/actions";
 
 export function UploadForm({ projectId }: { projectId: string }) {
   const [error, setError] = useState<string | null>(null);

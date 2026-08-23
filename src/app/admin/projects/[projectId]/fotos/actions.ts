@@ -108,7 +108,7 @@ export async function confirmPhotoUpload(input: ConfirmUploadInput): Promise<Act
     displayOrder: maxOrder + 1,
   });
 
-  revalidatePath("/admin/fotos");
+  revalidatePath(`/admin/projects/${projectId}/fotos`);
   revalidatePublicProject(projectId).catch(() => {});
   return { success: true };
 }
@@ -136,7 +136,7 @@ export async function deletePhoto(photoId: string): Promise<ActionResult> {
 
   await db.delete(photo).where(eq(photo.id, photoId));
 
-  revalidatePath("/admin/fotos");
+  await Promise.all(affectedProjectIds.map((id) => revalidatePath(`/admin/projects/${id}/fotos`)));
   await Promise.all(affectedProjectIds.map((id) => revalidatePublicProject(id).catch(() => {})));
   return { success: true };
 }
@@ -176,7 +176,7 @@ export async function updatePhotoOrder(
     ),
   );
 
-  revalidatePath("/admin/fotos");
+  revalidatePath(`/admin/projects/${projectId}/fotos`);
   await revalidatePublicProject(projectId).catch(() => {});
   return { success: true };
 }

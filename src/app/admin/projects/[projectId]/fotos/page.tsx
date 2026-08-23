@@ -2,27 +2,17 @@ import { eq, asc } from "drizzle-orm";
 
 import { db } from "@/db/client";
 import { photo, project, projectPhoto } from "@/db/schema";
-import { UploadForm } from "@/app/admin/fotos/upload-form";
-import { PhotoReorderList } from "@/app/admin/fotos/photo-reorder-list";
+import { UploadForm } from "@/app/admin/projects/[projectId]/fotos/upload-form";
+import { PhotoReorderList } from "@/app/admin/projects/[projectId]/fotos/photo-reorder-list";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminFotosPage({
-  searchParams,
+  params,
 }: {
-  searchParams: Promise<{ projectId?: string }>;
+  params: Promise<{ projectId: string }>;
 }) {
-  const { projectId } = await searchParams;
-
-  if (!projectId) {
-    return (
-      <main className="mx-auto max-w-2xl px-4 py-16">
-        <p className="text-muted text-sm">
-          Selecione um projeto em <code>/admin/projects</code> para gerenciar suas fotos.
-        </p>
-      </main>
-    );
-  }
+  const { projectId } = await params;
 
   const currentProject = await db.query.project.findFirst({
     where: eq(project.id, projectId),
