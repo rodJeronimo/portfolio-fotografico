@@ -18,10 +18,14 @@ Neon ✅ · GitHub OAuth App ✅ · Cloudflare R2 ✅ (bucket `portfolio-fotogra
 ## Concluído (cont.)
 - **M4 (galeria pública)**: Home + página de projeto + lightbox acessível (`<dialog>` nativo, sem reimplementar focus trap). Conectado `revalidatePath` das rotas públicas nas Server Actions de M2 (gap real que existia — upload nunca atualizava a home/projeto antes disso). Validado com projeto+foto reais criados/testados/limpos via `tsx` + `curl` local.
 
+## Concluído (cont. 2)
+- **M5 (Sobre/Contato)**: `site_settings` CRUD (`about.content`), `/sobre` e `/contato` reais, formulário com honeypot + rate limit (reaproveita o mock do M2), envio de e-mail **mockado** (`src/lib/email/`) — decisão registrada: Resend (não Formspree) para quando a conta existir, troca isolada. Validado com upsert real no Neon + `curl`.
+
 ## Próximo
 - **TASK-0013**: reordenação drag-and-drop de fotos (extraída da TASK-0007, trabalho de UI substancial).
 - **Revisão heurística de `@ux-designer`** pendente para M4 (não feita nesta sessão solo).
-- **TASK-0009 (M5)**: vai precisar de conta Resend ou Formspree.
+- **TASK-0010 (M6 — SEO)**: sem bloqueio externo conhecido, pode seguir.
+- **Conta Resend/Formspree**: só necessária para envio real de e-mail de contato — não bloqueia mais implementação (mock cobre isso).
 
 ## Backlog (ordem prevista)
-TASK-0013 (DnD) → TASK-0009 (M5, precisa Resend/Formspree) → TASK-0010 (M6 SEO) → TASK-0011 (M7 polish) → TASK-0012 (M8 e2e/hardening, inclui trocar rate-limit mock por Upstash real se a conta existir até lá).
+TASK-0010 (M6 SEO) → TASK-0013 (DnD) → TASK-0011 (M7 polish) → TASK-0012 (M8 e2e/hardening, inclui trocar rate-limit mock por Upstash real e email mock por Resend real se as contas existirem até lá).

@@ -3,7 +3,7 @@ id: TASK-0008
 title: "M4 — Galeria pública: Home, projetos, lightbox acessível"
 milestone: M4
 owner: "@frontend"
-status: Em revisao
+status: Concluida
 depends_on: [TASK-0007]
 related_docs: [docs/design/guidelines.md]
 ---
