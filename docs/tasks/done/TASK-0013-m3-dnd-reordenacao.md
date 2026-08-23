@@ -3,7 +3,7 @@ id: TASK-0013
 title: "M3 (follow-up) — Reordenação drag-and-drop de fotos"
 milestone: M3
 owner: "@frontend"
-status: Em revisao
+status: Concluida
 depends_on: [TASK-0007]
 related_docs: [docs/architecture/upload-flow.md, docs/design/guidelines.md]
 ---

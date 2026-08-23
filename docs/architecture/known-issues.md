@@ -29,3 +29,5 @@
 **Mitigação recomendada quando houver tempo**:
 1. Testar se um upgrade/downgrade de versão do Next 15.x resolve (checar changelog/issues do repositório `vercel/next.js` por "route group notFound status").
 2. Alternativa: mover a validação de existência do projeto para o `middleware.ts` (que já roda antes do render), retornando uma `NextResponse` com status 404 explícito antes mesmo de chegar à página — contorna o bug por completo, mas exigiria uma query ao DB no middleware (edge runtime, latência extra) ou uma lista cacheada de slugs válidos.
+
+**Nota (TASK-0012)**: não bloqueou a suite e2e — os testes de galeria (`tests/e2e/gallery.spec.ts`) sempre navegam para slugs existentes (seedados antes de cada teste), nunca exercitando o caminho de 404. O bug permanece real e documentado, só não tem cobertura de teste automatizado (adicionar um teste específico de "slug inexistente retorna 404" ficaria vermelho até o bug ser corrigido — decisão consciente de não adicionar um teste sabidamente falho).

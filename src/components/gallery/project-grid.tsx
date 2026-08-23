@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { getPublicUrl } from "@/lib/storage/r2";
+import { getPublicUrl } from "@/lib/storage/public-url";
 
 export interface ProjectGridItem {
   id: string;

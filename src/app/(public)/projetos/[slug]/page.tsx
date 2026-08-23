@@ -6,7 +6,7 @@ import type { Metadata } from "next";
 import { db } from "@/db/client";
 import { project, photo, projectPhoto } from "@/db/schema";
 import { env } from "@/lib/env";
-import { getPublicUrl } from "@/lib/storage/r2";
+import { getPublicUrl } from "@/lib/storage/public-url";
 import { PhotoGallery, type GalleryPhoto } from "@/components/gallery/photo-gallery";
 
 // Fallback de segurança — invalidação real acontece via revalidatePath no upload/CRUD (ver admin/*/actions.ts).

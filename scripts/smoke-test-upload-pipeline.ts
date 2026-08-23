@@ -14,7 +14,8 @@ import { project, photo, projectPhoto } from "../src/db/schema";
 import { detectAndValidateImageType } from "../src/lib/mime";
 import { extractSanitizedExif } from "../src/lib/image-pipeline/exif";
 import { processAndUploadVariants } from "../src/lib/image-pipeline/process";
-import { getPublicUrl, deleteObject } from "../src/lib/storage/r2";
+import { deleteObject } from "../src/lib/storage/r2";
+import { getPublicUrl } from "../src/lib/storage/public-url";
 
 async function main() {
   const buffer = readFileSync("/tmp/test-photo.jpg");

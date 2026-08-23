@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 
 import { updatePhotoOrder, deletePhoto } from "@/app/admin/fotos/actions";
-import { getPublicUrl } from "@/lib/storage/r2";
+import { getPublicUrl } from "@/lib/storage/public-url";
 
 export interface ReorderablePhoto {
   id: string;
