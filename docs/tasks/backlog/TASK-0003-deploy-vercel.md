@@ -18,7 +18,7 @@ Checklist de config Vercel (framework preset, build command, output dir, env var
 
 ## Critérios de aceite
 - [x] Projeto criado e linkado na Vercel (`rodjeronimo/portfolio-fotografico`), secrets `VERCEL_TOKEN`/`VERCEL_ORG_ID`/`VERCEL_PROJECT_ID` cadastrados no GitHub Actions.
-- [ ] Env vars reais (`DATABASE_URL`, `AUTH_*`, `STORAGE_R2_*`, `UPSTASH_*`) configuradas no projeto Vercel — depende das contas Neon/R2/GitHub OAuth/Upstash ainda não criadas (TASK-0005+).
+- [ ] Env vars reais (`DATABASE_URL`, `AUTH_*`, `STORAGE_R2_*`, `UPSTASH_*`) configuradas no projeto Vercel — `DATABASE_URL`, `AUTH_*`, `STORAGE_R2_*` já reais (TASK-0005/0006). Só `UPSTASH_*` ainda placeholder.
 - [x] `vercel.json` presente e validado (headers de cache para assets estáticos/imagens + segurança básica).
 - [x] Documentado como fazer rollback (CLI e dashboard) em `docs/architecture/deploy-vercel.md`.
 - [x] Limites do tier free (build minutes, bandwidth, function execution) documentados com gatilho de alerta.
@@ -34,4 +34,4 @@ TASK-0001.
 - **Bug real encontrado e corrigido**: o primeiro token gerado retornava `User not found` tanto no CI quanto testado diretamente contra `api.vercel.com` — não era erro de digitação, era um token de conta **Team** (não pessoal), que quebra `vercel whoami`/`vercel pull`/`vercel build --prebuilt` (dependem de resolver identidade de usuário pessoal) mas funciona normalmente com `vercel deploy` simples (build remoto na própria Vercel). `preview.yml`/`release.yml`/`hotfix.yml` reescritos para usar esse caminho. Documentado em `docs/architecture/deploy-vercel.md`.
 - **Bug real #2**: `actions/github-script` comentando a URL do preview no PR falhava com `403 Resource not accessible by integration` — `GITHUB_TOKEN` do job sem `pull-requests: write` (padrão read-only do repo). Corrigido com bloco `permissions` no job.
 - **Validação real do pipeline**: confirmada em produção — deploy manual (`https://portfolio-fotografico-eta.vercel.app`, HTTP 200) e via CI no PR #4 (`Deploy preview (Vercel)` verde, comentário `🔗 Preview deployado: ...` postado automaticamente no PR).
-- **`DATABASE_URL` real configurada** (TASK-0005): substituída via API REST, primeira env var placeholder a virar real. Faltam `AUTH_GITHUB_ID`/`AUTH_GITHUB_SECRET`/`AUTH_SECRET` (TASK-0005) e `STORAGE_R2_*`/`UPSTASH_*` (TASK-0007).
+- **`DATABASE_URL`, `AUTH_*`, `STORAGE_R2_*` reais configuradas** (TASK-0005/0006): todas substituídas via API REST (mesmo padrão: PATCH `/v9/projects/{id}/env/{envId}` + redeploy manual). Credenciais R2 validadas com list/put/delete real no bucket + leitura via URL pública. Só falta `UPSTASH_REDIS_REST_URL`/`UPSTASH_REDIS_REST_TOKEN` (rate limiting do upload, TASK-0006) — mockado por enquanto (ver `docs/tasks/backlog/TASK-0006-m2-admin-upload-mvp.md`).
