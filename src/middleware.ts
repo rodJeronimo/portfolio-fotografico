@@ -1,11 +1,18 @@
 import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
 
-// TODO(M1): validar sessão Auth.js v5 + allowlist ADMIN_EMAILS.
-// Ver docs/architecture/auth-strategy.md.
-export function middleware(_request: NextRequest) {
-  return NextResponse.next();
-}
+import { auth } from "@/lib/auth";
+
+export default auth((request) => {
+  const isLoggedIn = !!request.auth;
+  const isLoginPage = request.nextUrl.pathname === "/admin/login";
+
+  if (isLoggedIn || isLoginPage) {
+    return NextResponse.next();
+  }
+
+  const loginUrl = new URL("/admin/login", request.nextUrl.origin);
+  return NextResponse.redirect(loginUrl);
+});
 
 export const config = {
   matcher: ["/admin/:path*"],
