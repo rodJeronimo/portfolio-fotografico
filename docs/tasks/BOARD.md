@@ -22,7 +22,7 @@ Owner: `@pm`. Fonte única de verdade do progresso. Cada linha aponta para o arq
 | [TASK-0013](backlog/TASK-0013-m3-dnd-reordenacao.md) | Reordenação drag-and-drop de fotos | M3 | `@frontend` | Em revisao (PR pendente) |
 | [TASK-0009](done/TASK-0009-m5-sobre-contato.md) | Sobre Mim e Contato | M5 | `@backend` | Concluida |
 | [TASK-0010](done/TASK-0010-m6-seo.md) | SEO (metadata, sitemap, JSON-LD, OG) | M6 | `@backend` | Concluida |
-| [TASK-0011](backlog/TASK-0011-m7-observabilidade-polish.md) | Observabilidade e polish | M7 | `@frontend` | Backlog |
+| [TASK-0011](backlog/TASK-0011-m7-observabilidade-polish.md) | Observabilidade e polish | M7 | `@frontend` | Em revisao (PR pendente) |
 | [TASK-0012](backlog/TASK-0012-m8-e2e-hardening.md) | Testes e2e e hardening final | M8 | `@qa` | Backlog |
 
 ## Convenções
