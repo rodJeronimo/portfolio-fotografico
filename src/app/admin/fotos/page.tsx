@@ -2,9 +2,10 @@ import { eq, asc } from "drizzle-orm";
 
 import { db } from "@/db/client";
 import { photo, project, projectPhoto } from "@/db/schema";
-import { getPublicUrl } from "@/lib/storage/r2";
 import { UploadForm } from "@/app/admin/fotos/upload-form";
-import { DeletePhotoButton } from "@/app/admin/fotos/delete-photo-button";
+import { PhotoReorderList } from "@/app/admin/fotos/photo-reorder-list";
+
+export const dynamic = "force-dynamic";
 
 export default async function AdminFotosPage({
   searchParams,
@@ -32,8 +33,6 @@ export default async function AdminFotosPage({
       id: photo.id,
       storageKey: photo.storageKey,
       title: photo.title,
-      blurDataUrl: photo.blurDataUrl,
-      displayOrder: projectPhoto.displayOrder,
     })
     .from(projectPhoto)
     .innerJoin(photo, eq(projectPhoto.photoId, photo.id))
@@ -48,20 +47,7 @@ export default async function AdminFotosPage({
 
       <UploadForm projectId={projectId} />
 
-      <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-        {photos.length === 0 && <li className="text-muted text-sm">Nenhuma foto ainda.</li>}
-        {photos.map((p) => (
-          <li key={p.id} className="border-border flex flex-col gap-2 rounded-md border p-2">
-            {/* eslint-disable-next-line @next/next/no-img-element -- thumbnail simples, next/image entra em M4 (galeria) */}
-            <img
-              src={getPublicUrl(`${p.storageKey}/thumb.webp`)}
-              alt={p.title ?? ""}
-              className="aspect-square w-full rounded object-cover"
-            />
-            <DeletePhotoButton photoId={p.id} />
-          </li>
-        ))}
-      </ul>
+      <PhotoReorderList projectId={projectId} initialPhotos={photos} />
     </main>
   );
 }

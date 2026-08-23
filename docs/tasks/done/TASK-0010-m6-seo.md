@@ -3,7 +3,7 @@ id: TASK-0010
 title: "M6 — SEO: metadata dinâmica, sitemap, JSON-LD, OG images"
 milestone: M6
 owner: "@backend"
-status: Em revisao
+status: Concluida
 depends_on: [TASK-0008]
 related_docs: [docs/architecture/seo-strategy.md]
 ---

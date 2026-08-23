@@ -3,7 +3,7 @@ id: TASK-0009
 title: "M5 — Sobre Mim e Contato (conteúdo editável + formulário)"
 milestone: M5
 owner: "@backend"
-status: Em revisao
+status: Concluida
 depends_on: [TASK-0006]
 related_docs: [docs/architecture/data-model.md]
 ---
