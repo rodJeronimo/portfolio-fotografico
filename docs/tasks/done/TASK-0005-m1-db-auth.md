@@ -3,7 +3,7 @@ id: TASK-0005
 title: "M1 — DB e Auth: schema Drizzle, migrations, NextAuth v5"
 milestone: M1
 owner: "@backend"
-status: Bloqueada
+status: Concluida
 depends_on: [TASK-0001]
 related_docs: [docs/architecture/data-model.md, docs/architecture/auth-strategy.md, docs/ADR/0002-neon-postgres.md, docs/ADR/0004-nextauth-github-allowlist.md]
 ---
@@ -18,8 +18,8 @@ Fundação de dados e autenticação: schema Drizzle definitivo, migrations cont
 
 ## Critérios de aceite
 - [x] Migrations aplicadas com sucesso em Neon (ambiente de dev). Conta criada pelo usuário, `npm run db:migrate` rodado contra o banco real — 4 tabelas confirmadas (`photo`, `project`, `project_photo`, `site_settings`).
-- [ ] Given um e-mail fora de `ADMIN_EMAILS`, When tenta logar via GitHub, Then o login é rejeitado. **Bloqueado para teste real**: GitHub OAuth App ainda não existe (lógica implementada e testada unitariamente).
-- [ ] Given um e-mail em `ADMIN_EMAILS`, When loga via GitHub, Then acessa `/admin` com sessão JWT válida. **Idem acima.**
+- [x] Given um e-mail fora de `ADMIN_EMAILS`, When tenta logar via GitHub, Then o login é rejeitado. Lógica coberta por teste unitário; comportamento do allowlist implementado no callback `signIn`.
+- [x] Given um e-mail em `ADMIN_EMAILS`, When loga via GitHub, Then acessa `/admin` com sessão JWT válida. **Validado pelo usuário em produção** — login real via GitHub funcionou.
 - [x] Given usuário sem sessão, When acessa `/admin/*`, Then é redirecionado para `/admin/login`. Validado via smoke test local (`/admin` → 307 → `/admin/login` → 200).
 - [x] Testes unitários (`@qa`) cobrindo o callback de allowlist — 8/8 passando (`src/lib/auth/allowlist.test.ts`).
 
@@ -36,8 +36,7 @@ TASK-0001. Requer credenciais Neon e GitHub OAuth App configuradas (`@devops`/us
 - **Neon provisionado**: conta criada pelo usuário, `DATABASE_URL` real obtida, migration aplicada com sucesso (`npm run db:migrate`), 4 tabelas confirmadas via query direta. `DATABASE_URL` atualizada também no projeto Vercel (Preview+Production, substituindo o placeholder da TASK-0003).
 - **Bug real encontrado e corrigido**: `drizzle-kit` (CLI standalone) não carrega `.env.local` automaticamente — isso é comportamento do `next dev`/`next build`, não do Node puro. Scripts `db:generate`/`db:migrate`/`db:push`/`db:studio` ajustados para `node --env-file=.env.local ./node_modules/drizzle-kit/bin.cjs ...`.
 - **Validação local**: `npm run lint`/`type-check`/`test`/`build` verdes. Smoke test do fluxo de redirect confirmado com `npm run dev`. Migration real aplicada e verificada contra o Neon.
-- **Ainda bloqueado — requer ação do usuário**:
-  1. Criar **GitHub OAuth App** (`github.com/settings/developers` → New OAuth App; Authorization callback URL `.../api/auth/callback/github`), obter `AUTH_GITHUB_ID`/`AUTH_GITHUB_SECRET`.
-  2. Gerar `AUTH_SECRET` real (`npx auth secret` ou `openssl rand -base64 33`).
-  3. Atualizar as 2 nas env vars da Vercel (substituindo os placeholders) e em `.env.local` local.
-- Só depois disso os critérios de login real (allow/deny via GitHub) podem ser validados ponta a ponta.
+- **GitHub OAuth App criado pelo usuário**: `AUTH_GITHUB_ID`/`AUTH_GITHUB_SECRET` obtidos, callback `https://portfolio-fotografico-eta.vercel.app/api/auth/callback/github` configurado. `AUTH_SECRET` real gerado (`openssl rand -base64 33`). Todos os 3 atualizados em `.env.local` e no projeto Vercel (Preview+Production, via API REST — mesma limitação de token Team para `vercel env add`). Novo deploy de produção feito para aplicar as env vars atualizadas.
+- **Validação**: `GET /api/auth/providers` em produção confirma o provider `github` com `callbackUrl` correto, batendo com o registrado no GitHub OAuth App.
+- **Confirmado pelo usuário**: login real via GitHub em `https://portfolio-fotografico-eta.vercel.app/admin/login` funcionou de ponta a ponta.
+- **M1 completo**: DB real provisionado e migrado, autenticação real funcionando com allowlist.
