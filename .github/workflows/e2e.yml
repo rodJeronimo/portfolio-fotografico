@@ -23,21 +23,46 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps chromium
 
-      # PRs para main vêm de release/* ou hotfix/*, que já passaram pelo
-      # preview.yml em develop. Aqui aguardamos o Deployment/Status check
-      # de preview mais recente da Vercel para esse commit e usamos a URL
-      # resultante como alvo dos testes e2e.
-      - name: Wait for Vercel preview deployment
-        id: wait-preview
-        uses: patrickedqvist/wait-for-vercel-preview@v1.3.1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          max_timeout: 600
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
 
+      # wait-for-vercel-preview depende do GitHub App da Vercel postar um
+      # Deployment status (actor vercel[bot]) — não acontece aqui porque o
+      # token Team-scoped usa `vercel deploy` via CLI (ver preview.yml), que
+      # não passa pela integração GitHub App. Por isso fazemos nosso próprio
+      # deploy de preview aqui, igual ao preview.yml, e testamos contra ele.
+      - name: Deploy to Vercel (preview)
+        id: deploy
+        run: |
+          url=$(vercel deploy --token=${{ secrets.VERCEL_TOKEN }} --yes)
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+      # global-setup/seed/auth helpers conectam direto no Neon+R2 (fora do
+      # preview deployado) e forjam um cookie de sessão — AUTH_SECRET precisa
+      # ser idêntico ao configurado na Vercel para o preview aceitar o cookie.
+      # Demais vars server-only são exigidas por src/lib/env.ts (validação
+      # eager de todo o schema) mas não usadas pelos helpers de teste, então
+      # levam valores dummy (mesmo padrão de ci.yml).
       - name: Run Playwright tests
         run: npx playwright test
         env:
-          PLAYWRIGHT_BASE_URL: ${{ steps.wait-preview.outputs.url || 'http://localhost:3000' }}
+          PLAYWRIGHT_BASE_URL: ${{ steps.deploy.outputs.url }}
+          DATABASE_URL: ${{ secrets.CI_DATABASE_URL }}
+          AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
+          AUTH_GITHUB_ID: "ci-dummy"
+          AUTH_GITHUB_SECRET: "ci-dummy"
+          ADMIN_EMAILS: "ci-dummy@example.com"
+          STORAGE_R2_ACCOUNT_ID: ${{ secrets.STORAGE_R2_ACCOUNT_ID }}
+          STORAGE_R2_ACCESS_KEY_ID: ${{ secrets.STORAGE_R2_ACCESS_KEY_ID }}
+          STORAGE_R2_SECRET_ACCESS_KEY: ${{ secrets.STORAGE_R2_SECRET_ACCESS_KEY }}
+          STORAGE_R2_BUCKET_NAME: ${{ secrets.STORAGE_R2_BUCKET_NAME }}
+          UPSTASH_REDIS_REST_URL: "https://example.com"
+          UPSTASH_REDIS_REST_TOKEN: "ci-dummy"
+          NEXT_PUBLIC_SITE_URL: "https://example.com"
+          NEXT_PUBLIC_STORAGE_R2_PUBLIC_URL: "https://example.com"
 
       - name: Upload Playwright report
         uses: actions/upload-artifact@v4
