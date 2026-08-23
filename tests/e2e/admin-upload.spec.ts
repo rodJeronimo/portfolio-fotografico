@@ -50,7 +50,7 @@ test("fluxo completo: login (bypass) → criar projeto → upload → aparece no
       .filter({ hasText: title })
       .getByRole("link", { name: "Gerenciar fotos" })
       .click();
-    await expect(page).toHaveURL(/\/admin\/fotos\?projectId=/);
+    await expect(page).toHaveURL(/\/admin\/projects\/[^/]+\/fotos/);
 
     // 5. Upload real via input de arquivo (dispara requestPhotoUpload → PUT no R2 → confirmPhotoUpload).
     await page.locator('input[type="file"]').setInputFiles(filePath);

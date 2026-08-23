@@ -2,6 +2,9 @@
 
 Fonte completa e sempre atual: `docs/tasks/BOARD.md`. Este arquivo é um snapshot rápido.
 
+## 🚀 v1.0.0 lançado em produção (2026-08-23)
+Release formal via GitFlow (`release/1.0.0` → PR #18 → `main`, merge admin-bypass pois autor não pode auto-aprovar), tag `v1.0.0`, deploy real `vercel deploy --prod`. URL: `https://portfolio-fotografico-eta.vercel.app`. GitHub Release: https://github.com/rodJeronimo/portfolio-fotografico/releases/tag/v1.0.0.
+
 ## 🎉 Roadmap original completo (M0–M8)
 Todas as 9 milestones do plano original (Fase 0 a M8) estão **Concluídas**. Portfólio funcionalmente completo, validado com dados reais em produção (Neon+R2+Vercel+GitHub OAuth), com suite e2e real (Playwright, 6/6 passando) e revisão OWASP sem itens críticos abertos.
 
@@ -20,6 +23,9 @@ Neon ✅ · GitHub OAuth App ✅ · Cloudflare R2 ✅ (bucket `portfolio-fotogra
 9. `next start` local exige `AUTH_TRUST_HOST=true` (Vercel real já confia via proxy próprio).
 10. Testes e2e que seedam direto no DB (bypassando Server Actions) não disparam `revalidatePath` — endpoint interno `POST /api/revalidate` resolve (padrão webhook de CMS).
 11. Testes e2e que mutam estado real compartilhado (Neon+R2) **precisam rodar serial** (`workers: 1`) — paralelismo causa `beforeAll` duplicado e dados colidindo.
+12. `e2e.yml` (PRs para `main`) nunca tinha sido exercitado de fato (só localmente na TASK-0012) — 3 bugs reais só apareceram no primeiro release: (a) `wait-for-vercel-preview` espera Deployment status do app `vercel[bot]`, que não existe com token Team-scoped (`vercel deploy` via CLI não passa pela integração GitHub App) — resolvido fazendo o próprio job deployar o preview; (b) `playwright.config.ts` sempre subia servidor local mesmo testando contra preview remoto — `webServer` agora é condicional a `PLAYWRIGHT_BASE_URL`; (c) helpers de teste (Neon+R2 diretos) não tinham os secrets reais no GitHub Actions — só existiam localmente.
+13. **Vercel Deployment Protection ("Vercel Authentication") ativo bloqueava e2e contra preview** — redirect pra `vercel.com/login` em toda página, 401 em toda API. Resolvido desativando o toggle em Project Settings (usuário, via dashboard).
+14. Bypass de OAuth em e2e (`tests/e2e/helpers/auth.ts`) fixava `domain: "localhost"` e cookie sem prefixo — contra HTTPS real o Auth.js exige `__Secure-authjs.session-token` (também usado como salt do JWE) e cookie escopado à URL real, não a "localhost".
 
 ## Padrão geral (env vars)
 Nova env var real: (a) `.env.local`, (b) `PATCH /v9/projects/{id}/env/{envId}?teamId=...` na Vercel, (c) **redeploy manual** (`vercel deploy --prod`).
@@ -31,4 +37,4 @@ Nova env var real: (a) `.env.local`, (b) `PATCH /v9/projects/{id}/env/{envId}?te
 - Trocar mocks (rate-limit → Upstash, email → Resend) quando/se as contas existirem.
 
 ## Próximo (fora do roadmap original)
-Nada planejado — roadmap original 100% entregue. Próximos passos ficam a critério do usuário (ex.: popular com fotos reais, decidir sobre um release formal para `main`, revisão de UX, ou novas features).
+Nada planejado — v1.0.0 em produção. Próximos passos ficam a critério do usuário (ex.: popular com fotos reais, revisão de UX, ou novas features).

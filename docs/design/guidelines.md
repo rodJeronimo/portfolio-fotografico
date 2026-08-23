@@ -73,3 +73,11 @@ Escala padrão do Tailwind v4 (base 0.25rem). Breakpoints padrão (`sm` 640px, `
 ### Estados de foco
 
 `:focus-visible` sempre com anel de 2px na cor `--color-accent`, offset de 2px — visível em qualquer fundo (claro/escuro), nunca removido via `outline: none` sem substituto.
+
+## Área administrativa — nav e padrões de hub
+
+O admin é operado por uma única pessoa (o fotógrafo/dono), autenticada — prioriza densidade e clareza de navegação sobre estética editorial. Ainda assim usa os mesmos tokens de cor/tipografia/raio do site público (ver M0 acima); não introduz paleta, fonte ou componente próprios.
+
+- **Nav persistente** em todas as rotas `/admin/*` autenticadas (exceto `/admin/login`), implementada como layout compartilhado (`src/app/admin/layout.tsx` + `src/components/admin/admin-nav.tsx`). Especificação completa de estrutura, estados e comportamento mobile: `docs/design/admin-dashboard.md`.
+- **Dashboard/hub (`/admin`)** usa navegação por cards descritivos como ponto de entrada para cada área de gestão (Projetos, Configurações) — título + descrição curta de uma linha, nunca ícone/imagem decorativa sem função. Princípio: "escolha por onde começar", clareza sobre profundidade — o operador nunca precisa memorizar ou digitar uma URL administrativa.
+- Cards de dashboard reaproveitam o padrão visual já usado em listas do admin (`rounded-md border border-border p-*`, `text-muted` para metadados) — não introduzem componente de "card com sombra/imagem de capa" como os cards de projeto do site público; a distinção reforça que admin é ferramenta de gestão, não vitrine.

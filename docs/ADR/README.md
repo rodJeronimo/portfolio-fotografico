@@ -9,3 +9,4 @@ Formato: [MADR](https://adr.github.io/madr/).
 | [0003](0003-cloudflare-r2.md) | Storage/CDN: Cloudflare R2 | Aceito |
 | [0004](0004-nextauth-github-allowlist.md) | Autenticação admin: Auth.js v5 + GitHub + allowlist | Aceito |
 | [0005](0005-gitflow.md) | Versionamento: GitFlow clássico | Aceito |
+| [0006](0006-admin-dashboard-navigation.md) | Dashboard admin: layout compartilhado e rota de fotos aninhada em projeto | Aceito |
