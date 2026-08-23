@@ -20,6 +20,10 @@ Passos a serem executados **pelo usuário** (`vercel login` exige autenticação
 
 Esses três secrets são consumidos pelos workflows `preview.yml`, `release.yml` e `hotfix.yml` (`docs/tasks/backlog/TASK-0002-pipeline-cicd.md`) — sem eles, os jobs de deploy falham (o restante do CI — lint/type-check/test/build — funciona independentemente).
 
+### Nota — token escopado a Team
+
+Quando a conta Vercel é organizada como **Team** (caso deste projeto — `rodjeronimo`), o token gerado em `/account/tokens` é escopado ao time, não à conta pessoal. Isso quebra `vercel whoami`, `vercel pull` e `vercel build --prebuilt` com erros como `User not found` ou `Could not retrieve Project Settings`, mesmo com o token e os IDs corretos — são comandos que dependem de resolver identidade de usuário pessoal antes de prosseguir. **`vercel deploy` (sem `pull`/`build --prebuilt`, deixando a Vercel buildar remotamente) funciona normalmente** com token de time e é o que os workflows deste projeto usam. Se no futuro for necessário usar `pull`/`build --prebuilt` (ex.: para inspecionar env vars localmente), gerar o token a partir de uma conta pessoal (não-Team) ou investigar permissões de escopo do token no dashboard.
+
 ## `vercel.json`
 
 Ver arquivo na raiz do repo. Configura:
