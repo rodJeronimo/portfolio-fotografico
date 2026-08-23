@@ -3,7 +3,7 @@ id: TASK-0014
 title: "Migrar rota de fotos para /admin/projects/[projectId]/fotos"
 milestone: ADR-0006
 owner: "@backend"
-status: Pronta
+status: Concluida
 depends_on: []
 related_docs: [docs/ADR/0006-admin-dashboard-navigation.md]
 ---
@@ -39,22 +39,22 @@ validada por `@arquiteto` — não requer nova validação de arquitetura.
 
 ## Critérios de aceite
 
-- [ ] Given um admin autenticado em `/admin/projects`, When clica em
+- [x] Given um admin autenticado em `/admin/projects`, When clica em
       "Gerenciar fotos" de um projeto, Then é levado para
       `/admin/projects/{projectId}/fotos` (não mais `/admin/fotos?projectId=`).
-- [ ] Given a rota `/admin/projects/{projectId}/fotos`, When a página carrega,
+- [x] Given a rota `/admin/projects/{projectId}/fotos`, When a página carrega,
       Then lista as fotos do projeto correto (mesmo comportamento funcional de
       antes: upload, exclusão, reordenação drag-and-drop).
-- [ ] Given uma foto é enviada, excluída ou reordenada em
+- [x] Given uma foto é enviada, excluída ou reordenada em
       `/admin/projects/{projectId}/fotos`, When a Server Action correspondente
       roda, Then `revalidatePath` aponta para a nova rota (sem cache stale) e,
       quando aplicável, para as rotas públicas do projeto (mesmo
       comportamento já existente em `TASK-0013`).
-- [ ] Given a pasta `src/app/admin/fotos/` antiga, When a migração é
+- [x] Given a pasta `src/app/admin/fotos/` antiga, When a migração é
       concluída, Then ela não existe mais no repositório (sem código morto).
-- [ ] `npm run lint` e `npm run typecheck` (ou equivalente do projeto) passam
+- [x] `npm run lint` e `npm run typecheck` (ou equivalente do projeto) passam
       sem erros após a migração.
-- [ ] Testes existentes que referenciam `/admin/fotos` (unitários/e2e, se
+- [x] Testes existentes que referenciam `/admin/fotos` (unitários/e2e, se
       houver) são atualizados para a nova rota e continuam verdes —
       confirmado por `@qa`.
 
@@ -68,9 +68,24 @@ mesclar em `develop` antes ou em paralelo, evitando conflito de merge em
 
 ## Resultado
 
-*(preenchido pelo @pm ao final, com base no relato do agente responsável e na aprovação de @qa/@reviewer)*
+Implementada por `@backend` em `feature/TASK-0014-migracao-rota-fotos-projeto`.
+Rota de fotos migrada de `/admin/fotos?projectId=` para
+`/admin/projects/[projectId]/fotos`, com todos os `revalidatePath` e o link em
+`src/app/admin/projects/page.tsx` ajustados; pasta antiga `src/app/admin/fotos/`
+removida. `@reviewer` aprovou o PR com ressalva sobre ordem de merge em
+relação à TASK-0015. `@qa` reprovou na primeira rodada: o e2e
+`tests/e2e/admin-upload.spec.ts` ainda validava a URL antiga
+(`/admin/fotos?projectId=`); corrigido para `/admin/projects/[projectId]/fotos`,
+CI voltou a ficar verde e `@qa` aprovou. Mergeada em `develop`.
 
-- Entregue em:
-- Desvios em relação aos critérios de aceite:
-- PR/commit relacionado:
-- Pendências remanescentes:
+Nota de processo: esta task rodou em paralelo com a TASK-0015 no mesmo
+diretório de trabalho, o que causou colisões (stash acidental, commit
+duplicado incorporado na branch da TASK-0015); recuperado sem perda de
+trabalho, mas consumiu tempo extra — recomenda-se evitar paralelismo no mesmo
+working directory em tasks futuras que tocam a mesma área do código
+(`src/app/admin/`).
+
+- Entregue em: `develop` (via PR #20, `feature/TASK-0014-migracao-rota-fotos-projeto`).
+- Desvios em relação aos critérios de aceite: nenhum desvio final — houve reprovação inicial de `@qa` por assert de e2e desatualizado, corrigida antes do merge.
+- PR/commit relacionado: PR #20.
+- Pendências remanescentes: débito não bloqueante registrado por `@qa` — nenhum teste unitário cobre a lógica de `revalidatePath` por múltiplos projetos afetados em `deletePhoto`.

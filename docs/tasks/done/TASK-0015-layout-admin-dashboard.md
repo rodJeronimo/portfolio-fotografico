@@ -3,7 +3,7 @@ id: TASK-0015
 title: "Layout admin compartilhado + dashboard/hub em /admin"
 milestone: ADR-0006
 owner: "@frontend"
-status: Pronta
+status: Concluida
 depends_on: []
 related_docs: [docs/ADR/0006-admin-dashboard-navigation.md, docs/design/admin-dashboard.md, docs/design/guidelines.md]
 ---
@@ -50,34 +50,35 @@ arquitetura ou design.
 
 Baseados na checklist da seção 5 de `docs/design/admin-dashboard.md`:
 
-- [ ] Nav aparece em todas as rotas `/admin/*` exceto `/admin/login`, com os
+- [x] Nav aparece em todas as rotas `/admin/*` exceto `/admin/login`, com os
       3 itens na ordem Dashboard → Projetos → Configurações, mais Sair.
-- [ ] Item de nav correspondente à rota atual (incluindo sub-rotas de
+- [x] Item de nav correspondente à rota atual (incluindo sub-rotas de
       Projetos, ex. `/admin/projects/[projectId]/fotos`) está marcado como
       ativo visualmente (cor + sublinhado/borda, não só cor) e via
       `aria-current="page"`.
-- [ ] Em viewport < 768px, nav colapsa em menu com toggle acessível por
+- [x] Em viewport < 768px, nav colapsa em menu com toggle acessível por
       teclado (`aria-expanded`, `aria-controls`); Sair permanece sempre
       visível fora do menu colapsado; menu fecha ao navegar e ao pressionar
       `Esc`.
-- [ ] `/admin` exibe exatamente 2 cards (Projetos, Configurações), cada um
+- [x] `/admin` exibe exatamente 2 cards (Projetos, Configurações), cada um
       com título + descrição de 1–2 linhas, link cobrindo o card inteiro,
       `href` correto (`/admin/projects`, `/admin/settings`).
-- [ ] Todos os elementos interativos (itens de nav, toggle mobile, Sair,
+- [x] Todos os elementos interativos (itens de nav, toggle mobile, Sair,
       cards) têm anel de foco visível ao navegar por teclado e alvo de
       toque ≥ 44×44px.
-- [ ] Nenhum novo token de cor/tipografia/raio introduzido fora dos já
+- [x] Nenhum novo token de cor/tipografia/raio introduzido fora dos já
       definidos em `docs/design/guidelines.md` (M0).
-- [ ] Se a contagem de projetos/fotos for implementada, sua ausência/erro
+- [x] Se a contagem de projetos/fotos for implementada, sua ausência/erro
       não quebra a renderização dos cards (falha isolada, silenciosa).
-- [ ] Logout funciona via Server Action (`signOut`), sem modal de
+- [x] Logout funciona via Server Action (`signOut`), sem modal de
       confirmação, e leva de volta a um estado deslogado (redirect para
       login ou home pública, conforme padrão já usado em
       `admin/login/page.tsx`).
-- [ ] `npm run lint` e `npm run typecheck` (ou equivalente do projeto) passam
+- [x] `npm run lint` e `npm run typecheck` (ou equivalente do projeto) passam
       sem erros.
-- [ ] Validado por `@qa` (a11y — navegação por teclado, leitor de tela para
-      `aria-current`/`aria-expanded` — e checagem visual do checklist acima).
+- [x] Validado por `@qa` (a11y — navegação por teclado, leitor de tela para
+      `aria-current`/`aria-expanded` — e checagem visual do checklist acima),
+      com ressalvas não bloqueantes (ver Resultado).
 
 ## Dependências
 
@@ -89,9 +90,33 @@ em `develop` antes ou em paralelo, evitando conflito de merge em
 
 ## Resultado
 
-*(preenchido pelo @pm ao final, com base no relato do agente responsável e na aprovação de @qa/@reviewer)*
+Implementada por `@frontend` em `feature/TASK-0015-layout-admin-dashboard`.
+Criado `src/app/admin/layout.tsx` com nav persistente, `src/components/admin/admin-nav.tsx`
+(item ativo via `usePathname()`, menu mobile colapsável, logout via Server
+Action), e `src/app/admin/page.tsx` reescrito como dashboard/hub com os 2
+cards (Projetos, Configurações), conforme `docs/design/admin-dashboard.md`.
 
-- Entregue em:
-- Desvios em relação aos critérios de aceite:
-- PR/commit relacionado:
-- Pendências remanescentes:
+Durante o desenvolvimento em paralelo com a TASK-0014 no mesmo diretório de
+trabalho, a branch incorporou por engano um commit idêntico ao de TASK-0014
+(colisão de working directory entre as duas sessões/agentes) — identificado
+por `@reviewer` e `@qa` antes do merge, corrigido via `git rebase
+origin/develop` (removeu o commit duplicado automaticamente) e atualização da
+descrição do PR, sem alterar o código real desta task. `@reviewer` e `@qa`
+aprovaram o PR com duas ressalvas não bloqueantes: (1) pequena inconsistência
+visual do indicador de item ativo entre desktop/mobile no menu de nav (cor +
+peso no mobile vs. cor + borda no desktop) — mitigada por `aria-current` e
+texto `sr-only`, não é violação WCAG, mas fica em aberto para nivelamento
+visual futuro por `@ux-designer`; (2) falta teste unitário para a função
+`isActive()` de matching de rota ativa em `admin-nav.tsx`. Mergeada em
+`develop`.
+
+Nota de processo: esta task rodou em paralelo com a TASK-0014 no mesmo
+diretório de trabalho, o que causou a colisão descrita acima; recuperado sem
+perda de trabalho, mas consumiu tempo extra — recomenda-se evitar
+paralelismo no mesmo working directory em tasks futuras que tocam a mesma
+área do código (`src/app/admin/`).
+
+- Entregue em: `develop` (via PR #19, `feature/TASK-0015-layout-admin-dashboard`).
+- Desvios em relação aos critérios de aceite: nenhum desvio funcional — a branch precisou de rebase para remover um commit duplicado incorporado por colisão de working directory com a TASK-0014, sem impacto no código entregue.
+- PR/commit relacionado: PR #19.
+- Pendências remanescentes: (1) inconsistência visual não bloqueante do indicador de item ativo entre desktop/mobile no nav, para nivelamento futuro por `@ux-designer`; (2) falta teste unitário para `isActive()` em `admin-nav.tsx`.

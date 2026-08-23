@@ -31,8 +31,8 @@ Owner: `@pm`. Fonte única de verdade do progresso. Cada linha aponta para o arq
 
 | ID | Título | Milestone | Agente | Status |
 |---|---|---|---|---|
-| [TASK-0014](backlog/TASK-0014-migracao-rota-fotos-projeto.md) | Migrar rota de fotos para /admin/projects/[projectId]/fotos | ADR-0006 | `@backend` | Pronta |
-| [TASK-0015](backlog/TASK-0015-layout-admin-dashboard.md) | Layout admin compartilhado + dashboard/hub em /admin | ADR-0006 | `@frontend` | Pronta |
+| [TASK-0014](done/TASK-0014-migracao-rota-fotos-projeto.md) | Migrar rota de fotos para /admin/projects/[projectId]/fotos | ADR-0006 | `@backend` | Concluida |
+| [TASK-0015](done/TASK-0015-layout-admin-dashboard.md) | Layout admin compartilhado + dashboard/hub em /admin | ADR-0006 | `@frontend` | Concluida |
 
 ## Convenções
 
