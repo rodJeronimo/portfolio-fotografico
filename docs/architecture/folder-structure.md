@@ -14,17 +14,24 @@ portfolio-fotografico/
 │   │   │       ├── sitemap.ts
 │   │   │       ├── robots.ts
 │   │   │       └── opengraph-image.tsx
-│   │   ├── (admin)/
-│   │   │   └── admin/
-│   │   │       ├── layout.tsx               # aplica verificação de sessão (via middleware)
-│   │   │       ├── login/page.tsx
-│   │   │       ├── projetos/
-│   │   │       │   ├── page.tsx             # listagem
-│   │   │       │   ├── novo/page.tsx
-│   │   │       │   └── [id]/page.tsx        # editar projeto + fotos
-│   │   │       └── fotos/
-│   │   │           ├── page.tsx             # listagem geral
-│   │   │           └── actions.ts           # Server Actions de upload/CRUD
+│   │   ├── admin/                           # sem route group — protegido via middleware.ts (matcher de path)
+│   │   │   ├── layout.tsx                   # nav compartilhada (server) + AdminNav (client), ver ADR-0006
+│   │   │   ├── page.tsx                     # dashboard/hub pós-login com links para as áreas de gestão
+│   │   │   ├── login/page.tsx
+│   │   │   ├── projects/
+│   │   │   │   ├── page.tsx                 # listagem de projetos
+│   │   │   │   ├── actions.ts
+│   │   │   │   ├── project-form.tsx
+│   │   │   │   └── [projectId]/
+│   │   │   │       └── fotos/
+│   │   │   │           ├── page.tsx         # gestão de fotos do projeto (ver ADR-0006)
+│   │   │   │           ├── actions.ts       # Server Actions de upload/CRUD/reorder
+│   │   │   │           ├── upload-form.tsx
+│   │   │   │           └── photo-reorder-list.tsx
+│   │   │   └── settings/
+│   │   │       ├── page.tsx
+│   │   │       ├── actions.ts
+│   │   │       └── settings-form.tsx
 │   │   └── api/                             # Route Handlers pontuais (ex.: webhooks, se necessário)
 │   ├── lib/
 │   │   ├── auth/                            # config Auth.js, callbacks, allowlist
@@ -64,7 +71,8 @@ portfolio-fotografico/
 ## Convenções
 
 - Projeto usa `--src-dir`: todo código de aplicação vive sob `src/` (convenção padrão do `create-next-app`), `docs/`, `drizzle/`, `tests/` e `.claude/` ficam na raiz.
-- `app/(public)` e `app/(admin)` são route groups — não afetam a URL, apenas organizam layouts/middlewares distintos.
+- `app/(public)` é route group (não afeta URL). `app/admin` **não** usa route group — implementado como pasta direta, protegida via `middleware.ts` (matcher `/admin/:path*`), não via layout de route group. Divergência do plano original aceita retroativamente em ADR-0006.
 - `[locale]` prepara i18n (PT-BR default, `en` futuro) sem exigir estrutura duplicada de páginas.
-- Server Actions de mutação ficam colocadas perto do domínio que afetam (`app/(admin)/admin/fotos/actions.ts`) ou centralizadas em `lib/actions/` se compartilhadas — decisão final de `@backend` ao implementar M2.
+- Server Actions de mutação ficam colocadas perto do domínio que afetam (ex.: `app/admin/projects/[projectId]/fotos/actions.ts`) — padrão adotado, sem centralização em `lib/actions/`.
+- Rotas de fotos são sempre aninhadas sob o projeto (`admin/projects/[projectId]/fotos`), nunca soltas — toda foto pertence a um projeto via `projectPhoto` (ver ADR-0006).
 - `lib/` nunca importa de `components/` (dependência unidirecional: UI depende de lib, não o contrário).
