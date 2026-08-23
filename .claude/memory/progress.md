@@ -2,7 +2,14 @@
 
 Fonte completa e sempre atual: `docs/tasks/BOARD.md`. Este arquivo é um snapshot rápido.
 
-## 🚀 v1.1.0 lançado em produção (2026-08-23)
+## 🚀 v1.2.0 lançado em produção (2026-08-23)
+Redesign fine-art do site público (site-wide, pedido do usuário: "não gostei do visual simplista"). Tipografia Fraunces (serifada de exibição) pareada com Geist Sans; sidebar de navegação substitui o header horizontal (`site-header.tsx` → `site-sidebar.tsx`, validado por `@arquiteto` sem ADR); cantos retos em todas as fotos; Home com bloco de destaque em tela cheia; destaque da Home configurável via `/admin/settings` (ADR-0007, `site_settings.home.featuredProjectId`, zero migration). Direção de design sintetizada de 3 referências (brunononogaki.com, portfólio pessoal do usuário na 46graus, alerodrigues.com) + mockup navegável iterado com o usuário (uma iteração de decisão revertida: "sidebar translúcida com foto vazando por trás" foi implementada, rejeitada visualmente pelo usuário, revertida para sidebar sólida — registrado em `docs/design/public-site-redesign.md` §2.1.1 como decisão final). 5 tasks (TASK-0016–0020) implementadas em paralelo via **worktrees isoladas** (`isolation: "worktree"` no Agent tool) — zero colisão desta vez, ao contrário do incidente de TASK-0014/0015. Release via GitFlow (`release/1.2.0` → PR #29 → `main`, admin-bypass), tag `v1.2.0`.
+
+**Pendência combinada com o usuário**: banco de dados (Neon) tem registros de fotos de teste da suite e2e — usuário pediu limpeza, mas só depois de validar tudo deployado primeiro. Não limpar sem confirmação explícita dele.
+
+**Nota de higiene**: worktrees isoladas (`.claude/worktrees/agent-*`) ficam órfãs no disco após os agentes terminarem — não são removidas automaticamente. Antes de rodar `npm run lint`/`test` localmente após uma rodada de agentes em worktree, rodar `git worktree list` e limpar (`git worktree remove --force <path>`) as já mergeadas, senão elas poluem lint/test com arquivos de `node_modules` delas mesmas.
+
+## v1.1.0 lançado em produção (2026-08-23)
 Feature: dashboard admin pós-login (ADR-0006) — nav persistente + hub por cards, rota de fotos migrada para `/admin/projects/[projectId]/fotos`. Fluxo completo `@arquiteto`→`@ux-designer`(mockup aprovado pelo usuário)→`@pm`(TASK-0014/0015)→`@backend`/`@frontend`→`@reviewer`/`@qa`. Release via GitFlow (`release/1.1.0` → PR #22 → `main`, admin-bypass), tag `v1.1.0`.
 
 **Incidente de processo**: TASK-0014 e TASK-0015 rodaram em paralelo (2 agentes) no mesmo working directory compartilhado, colidindo com uma sessão interativa também ativa no projeto — causou `git stash` acidental do trabalho de um agente e um commit duplicado no branch do outro. Recuperado sem perda (cherry-pick + rebase), mas custou tempo. **Licao**: para trabalho paralelo com múltiplos agentes Bash-capable no mesmo repo, isolar em worktrees separadas.
@@ -44,4 +51,4 @@ Nova env var real: (a) `.env.local`, (b) `PATCH /v9/projects/{id}/env/{envId}?te
 - Trocar mocks (rate-limit → Upstash, email → Resend) quando/se as contas existirem.
 
 ## Próximo (fora do roadmap original)
-Nada planejado — v1.1.0 em produção. Débitos não-bloqueantes da última feature: teste unitário para `isActive()` (admin-nav.tsx), inconsistência visual pequena do indicador de item ativo mobile vs desktop. Próximos passos ficam a critério do usuário.
+Aguardando usuário validar v1.2.0 deployado para então limpar registros de foto de teste no Neon (pedido explícito, não executar sem confirmação). Débitos não-bloqueantes acumulados (nenhum urgente): teste unitário para `isActive()` (admin-nav.tsx); inconsistência visual pequena do indicador ativo mobile vs desktop; breadcrumb da página de projeto perdeu `aria-current`/estrutura de lista semântica; texto duplicado no formulário de "Destaque da Home" quando 0 projetos; sem teste de componente para `featured-project-form.tsx`; metadados `location`/`captureDate` no lightbox adiados.
