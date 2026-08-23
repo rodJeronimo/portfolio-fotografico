@@ -37,6 +37,7 @@ Portfolio fotografico pessoal (fotografia de natureza) para exposicao de trabalh
 | Escrever/rodar testes Vitest/Playwright, cobertura | `@qa` |
 | Code review de PR, checklist de qualidade, arbitragem frontend/backend | `@reviewer` |
 | Usabilidade, hierarquia visual, harmonia do design system, heurísticas UX/a11y percebida | `@ux-designer` |
+| Resumo/contexto rápido do projeto, manter `.claude/memory/` sincronizada com `docs/` | `@memory-keeper` |
 
 ## Regras de orquestracao
 
@@ -55,3 +56,4 @@ Portfolio fotografico pessoal (fotografia de natureza) para exposicao de trabalh
 - `docs/ADR/` — decisoes arquiteturais formato MADR, indice em `docs/ADR/README.md`.
 - `docs/design/` — guidelines de UX/UI mantidas por `@ux-designer`.
 - `docs/tasks/` — board de tasks (`BOARD.md`), tasks individuais (`backlog/`, `done/`) e template (`TEMPLATE.md`), mantidos por `@pm`.
+- `.claude/memory/` — resumo compacto e sempre atualizado do projeto (business/architecture/guidelines/progress), mantido por `@memory-keeper` para onboarding rápido de qualquer sessão nova.
