@@ -3,7 +3,7 @@ id: TASK-0017
 title: "Destaque da Home configurável (site_settings home.featuredProjectId)"
 milestone: ADR-0007
 owner: "@backend"
-status: Pronta
+status: Concluida
 depends_on: []
 related_docs: [docs/ADR/0007-home-featured-project-setting.md, docs/design/admin-dashboard.md]
 ---
@@ -44,20 +44,20 @@ do hero na Home pública (TASK-0018) e a UI de admin (TASK-0020) dependem dela.
 
 ## Critérios de aceite
 
-- [ ] Given nenhuma linha `home.featuredProjectId` em `site_settings`, When
+- [x] Given nenhuma linha `home.featuredProjectId` em `site_settings`, When
       `getFeaturedProject()` é chamado, Then retorna o primeiro projeto por `displayOrder`
       (comportamento automático).
-- [ ] Given `home.featuredProjectId` aponta para um projeto existente, When
+- [x] Given `home.featuredProjectId` aponta para um projeto existente, When
       `getFeaturedProject()` é chamado, Then retorna esse projeto.
-- [ ] Given `home.featuredProjectId` aponta para um projeto que foi excluído, When
+- [x] Given `home.featuredProjectId` aponta para um projeto que foi excluído, When
       `getFeaturedProject()` é chamado, Then cai no fallback automático sem lançar erro.
-- [ ] Given a action de update de settings é chamada com `key = "home.featuredProjectId"`,
+- [x] Given a action de update de settings é chamada com `key = "home.featuredProjectId"`,
       When a escrita é bem-sucedida, Then `revalidatePath` é disparado para `/`,
       `/admin/settings` e `/sobre` (condicional por `key` ou sempre — `/` obrigatório para
       esta chave).
-- [ ] Testes unitários cobrindo os três casos de resolução (ausente, válido, órfão),
+- [x] Testes unitários cobrindo os três casos de resolução (ausente, válido, órfão),
       aprovados por `@qa`.
-- [ ] `lint` e `type-check` passam sem erros.
+- [x] `lint` e `type-check` passam sem erros.
 
 ## Dependências
 
@@ -67,9 +67,15 @@ preview).
 
 ## Resultado
 
-*(preenchido pelo @pm ao final, com base no relato do agente responsável e na aprovação de @qa/@reviewer)*
+Implementada em `feature/TASK-0017-destaque-home-setting`, PR #25. Adicionado destaque
+configurável da Home via `site_settings` (chave `home.featuredProjectId`, zero migration),
+funções `getFeaturedProject()`/`resolveFeaturedProjectId()` em `src/lib/home/`, Server Action
+`updateFeaturedProject()` em `src/app/admin/settings/actions.ts`, com `revalidatePath`
+incluindo `/` (Home pública). `@reviewer` e `@qa` aprovaram sem ressalvas bloqueantes —
+35/35 testes passando, incluindo cobertura completa de cenários de borda (chave ausente,
+projeto órfão, valor malformado).
 
-- Entregue em:
-- Desvios em relação aos critérios de aceite:
-- PR/commit relacionado:
-- Pendências remanescentes:
+- Entregue em: 2026-08-23
+- Desvios em relação aos critérios de aceite: nenhum.
+- PR/commit relacionado: PR #25 (`feature/TASK-0017-destaque-home-setting` → `develop`)
+- Pendências remanescentes: nenhuma.

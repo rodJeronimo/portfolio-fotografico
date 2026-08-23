@@ -3,7 +3,7 @@ id: TASK-0016
 title: "Fundação tipográfica e sidebar de navegação (redesign fine-art)"
 milestone: Redesign
 owner: "@frontend"
-status: Pronta
+status: Concluida
 depends_on: []
 related_docs: [docs/design/public-site-redesign.md, docs/architecture/folder-structure.md, docs/design/admin-dashboard.md]
 ---
@@ -47,24 +47,24 @@ qual TASK-0018 e TASK-0019 dependem.
 
 ## Critérios de aceite
 
-- [ ] Given qualquer rota pública, When a página carrega, Then `--font-serif` (Fraunces)
+- [x] Given qualquer rota pública, When a página carrega, Then `--font-serif` (Fraunces)
       está disponível e NÃO é usada em nav/wordmark/botões/breadcrumb (Geist Sans nesses
       elementos).
-- [ ] Given desktop `≥1024px`, When o usuário visualiza qualquer rota pública, Then a
+- [x] Given desktop `≥1024px`, When o usuário visualiza qualquer rota pública, Then a
       sidebar aparece à esquerda (`17rem`, sticky, `border-r`, fundo 100% opaco, sem
       blur/opacidade reduzida) com wordmark em dois pesos e nav vertical
       Início/Sobre/Contato.
-- [ ] Given a rota atual é `/projetos/[slug]`, When a nav renderiza, Then o item "Início"
+- [x] Given a rota atual é `/projetos/[slug]`, When a nav renderiza, Then o item "Início"
       aparece marcado como ativo (`aria-current="page"` + sublinhado).
-- [ ] Given viewport `<1024px`, When a página carrega, Then a sidebar vira barra superior
+- [x] Given viewport `<1024px`, When a página carrega, Then a sidebar vira barra superior
       com wordmark compacto + toggle acessível; menu expandido empurra o conteúdo (não
       overlay); fecha ao navegar ou `Esc`.
-- [ ] Given navegação por teclado, When o usuário percorre wordmark/nav/toggle, Then todos
+- [x] Given navegação por teclado, When o usuário percorre wordmark/nav/toggle, Then todos
       têm anel de foco visível e alvo de toque ≥44×44px.
-- [ ] `site-header.tsx` removido do repositório, nenhuma referência residual (import, teste,
+- [x] `site-header.tsx` removido do repositório, nenhuma referência residual (import, teste,
       snapshot).
-- [ ] `src/app/admin/**` inalterado por esta task.
-- [ ] `lint` e `type-check` passam sem erros.
+- [x] `src/app/admin/**` inalterado por esta task.
+- [x] `lint` e `type-check` passam sem erros.
 
 ## Dependências
 
@@ -75,9 +75,18 @@ aqui.
 
 ## Resultado
 
-*(preenchido pelo @pm ao final, com base no relato do agente responsável e na aprovação de @qa/@reviewer)*
+Implementada em `feature/TASK-0016-fundacao-sidebar-redesign`, PR #24. Criado
+`src/components/site-sidebar.tsx` (substituindo `src/components/site-header.tsx`, removido),
+Fraunces carregado em `src/app/layout.tsx`, e `src/app/(public)/layout.tsx` atualizado para
+layout flex com sidebar sempre sólida/opaca (decisão final registrada em
+`docs/design/public-site-redesign.md` §2.1.1, sem sobreposição/vazamento de foto).
+`@reviewer` e `@qa` aprovaram sem ressalvas bloqueantes.
 
-- Entregue em:
-- Desvios em relação aos critérios de aceite:
-- PR/commit relacionado:
-- Pendências remanescentes:
+- Entregue em: 2026-08-23
+- Desvios em relação aos critérios de aceite: nenhum bloqueante. Ressalva não bloqueante
+  registrada por `@reviewer` e `@qa`: a string exata do wordmark ("Rodrigo" /
+  "Jerônimo · Fotógrafo") ainda não foi confirmada pelo dono do site — usado o texto literal
+  da spec por ora.
+- PR/commit relacionado: PR #24 (`feature/TASK-0016-fundacao-sidebar-redesign` → `develop`)
+- Pendências remanescentes: confirmar com o dono do site a string definitiva do wordmark
+  (não bloqueante, ajuste textual futuro se necessário).
