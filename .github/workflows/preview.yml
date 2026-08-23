@@ -13,6 +13,8 @@ jobs:
   deploy-preview:
     name: Deploy preview (Vercel)
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
     # Requer secrets: VERCEL_TOKEN, VERCEL_ORG_ID, VERCEL_PROJECT_ID
     # (configurados por @devops na Vercel — ver TASK-0003 / docs/architecture/folder-structure.md).
     steps:
