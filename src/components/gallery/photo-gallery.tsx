@@ -19,7 +19,14 @@ export interface GalleryPhoto {
  * já vêm do navegador de graça, sem reimplementar gerenciamento de foco.
  * Ver docs/design/guidelines.md (M4) e docs/tasks/backlog/TASK-0008-m4-galeria-publica.md.
  */
-export function PhotoGallery({ photos }: { photos: GalleryPhoto[] }) {
+export function PhotoGallery({
+  photos,
+  projectTitle,
+}: {
+  photos: GalleryPhoto[];
+  /** Usado como fallback de `alt` quando a foto não tem título próprio — nunca renderiza alt vazio. */
+  projectTitle: string;
+}) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const triggerRef = useRef<HTMLElement | null>(null);
   const [index, setIndex] = useState<number | null>(null);
@@ -72,7 +79,7 @@ export function PhotoGallery({ photos }: { photos: GalleryPhoto[] }) {
             >
               <Image
                 src={getPublicUrl(`${p.storageKey}/thumb.webp`)}
-                alt={p.title ?? ""}
+                alt={p.title || `Foto de ${projectTitle}`}
                 fill
                 unoptimized
                 {...(p.blurDataUrl
@@ -106,7 +113,7 @@ export function PhotoGallery({ photos }: { photos: GalleryPhoto[] }) {
               <Image
                 key={current.id}
                 src={getPublicUrl(`${current.storageKey}/medium.webp`)}
-                alt={current.title ?? ""}
+                alt={current.title || `Foto de ${projectTitle}`}
                 width={current.width}
                 height={current.height}
                 unoptimized
