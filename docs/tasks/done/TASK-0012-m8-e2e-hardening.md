@@ -3,7 +3,7 @@ id: TASK-0012
 title: "M8 — Testes e2e e hardening final"
 milestone: M8
 owner: "@qa"
-status: Em revisao
+status: Concluida
 depends_on: [TASK-0011]
 related_docs: [docs/architecture/security.md, docs/architecture/owasp-review.md, docs/architecture/known-issues.md]
 ---
