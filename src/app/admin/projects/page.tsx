@@ -27,7 +27,7 @@ export default async function AdminProjectsPage() {
               <p className="text-sm font-medium">{p.title}</p>
               <p className="text-muted text-xs">/{p.slug}</p>
             </div>
-            <Link href={`/admin/fotos?projectId=${p.id}`} className="text-accent text-sm underline">
+            <Link href={`/admin/projects/${p.id}/fotos`} className="text-accent text-sm underline">
               Gerenciar fotos
             </Link>
           </li>
