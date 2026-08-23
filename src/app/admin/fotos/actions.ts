@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 import { eq, max } from "drizzle-orm";
 
 import { db } from "@/db/client";
-import { photo, projectPhoto } from "@/db/schema";
+import { photo, project, projectPhoto } from "@/db/schema";
 import { requireAdminSession } from "@/lib/auth/require-admin";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { createPresignedUploadUrl, deleteObject, getObjectBuffer } from "@/lib/storage/r2";
@@ -109,7 +109,7 @@ export async function confirmPhotoUpload(input: ConfirmUploadInput): Promise<Act
   });
 
   revalidatePath("/admin/fotos");
-  revalidatePath(`/admin/projects/${projectId}`);
+  revalidatePublicProject(projectId).catch(() => {});
   return { success: true };
 }
 
@@ -121,6 +121,13 @@ export async function deletePhoto(photoId: string): Promise<ActionResult> {
     return { success: false, error: "Foto não encontrada." };
   }
 
+  const affectedProjectIds = (
+    await db
+      .select({ projectId: projectPhoto.projectId })
+      .from(projectPhoto)
+      .where(eq(projectPhoto.photoId, photoId))
+  ).map((r) => r.projectId);
+
   await Promise.all(
     ["", "/thumb.webp", "/thumb.avif", "/medium.webp", "/medium.avif"].map((suffix) =>
       deleteObject(`${existing.storageKey}${suffix}`).catch(() => {}),
@@ -130,5 +137,17 @@ export async function deletePhoto(photoId: string): Promise<ActionResult> {
   await db.delete(photo).where(eq(photo.id, photoId));
 
   revalidatePath("/admin/fotos");
+  await Promise.all(affectedProjectIds.map((id) => revalidatePublicProject(id).catch(() => {})));
   return { success: true };
+}
+
+/**
+ * Revalida a home e a página pública do projeto após qualquer mutação de
+ * foto — ver docs/architecture/caching-strategy.md e upload-flow.md
+ * (publicação em <60s, sem novo deploy).
+ */
+async function revalidatePublicProject(projectId: string): Promise<void> {
+  const p = await db.query.project.findFirst({ where: eq(project.id, projectId) });
+  revalidatePath("/");
+  if (p) revalidatePath(`/projetos/${p.slug}`);
 }

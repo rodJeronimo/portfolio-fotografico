@@ -15,10 +15,13 @@ Neon ✅ · GitHub OAuth App ✅ · Cloudflare R2 ✅ (bucket `portfolio-fotogra
 2. Toda página `/admin/**` que lê dados direto do DB sem `searchParams` precisa de `export const dynamic = "force-dynamic"` explícito — Next 15 tenta pré-renderizar estaticamente por padrão, o que serviria dado desatualizado numa área administrativa.
 3. Testar lógica que depende de serviços reais (R2, Neon) via script `tsx` standalone (`scripts/smoke-test-upload-pipeline.ts`) quando não há como simular a UI (ex.: fluxo OAuth) — mais confiável que só unit tests com mocks.
 
+## Concluído (cont.)
+- **M4 (galeria pública)**: Home + página de projeto + lightbox acessível (`<dialog>` nativo, sem reimplementar focus trap). Conectado `revalidatePath` das rotas públicas nas Server Actions de M2 (gap real que existia — upload nunca atualizava a home/projeto antes disso). Validado com projeto+foto reais criados/testados/limpos via `tsx` + `curl` local.
+
 ## Próximo
-- **TASK-0008 (M4 — Galeria pública)**: liberada (`Pronta`), sem bloqueio externo conhecido. Fazer sentido implementar `next/image` loader customizado para R2 aqui (adiado da TASK-0007 por não ter consumidor até agora).
-- **TASK-0013**: reordenação drag-and-drop de fotos (extraída da TASK-0007, é trabalho de UI substancial).
+- **TASK-0013**: reordenação drag-and-drop de fotos (extraída da TASK-0007, trabalho de UI substancial).
+- **Revisão heurística de `@ux-designer`** pendente para M4 (não feita nesta sessão solo).
 - **TASK-0009 (M5)**: vai precisar de conta Resend ou Formspree.
 
 ## Backlog (ordem prevista)
-TASK-0008 (M4 galeria pública) → TASK-0013 (DnD, pode ser paralelo) → TASK-0009 (M5, precisa Resend/Formspree) → TASK-0010 (M6 SEO) → TASK-0011 (M7 polish) → TASK-0012 (M8 e2e/hardening, inclui trocar rate-limit mock por Upstash real se a conta existir até lá).
+TASK-0013 (DnD) → TASK-0009 (M5, precisa Resend/Formspree) → TASK-0010 (M6 SEO) → TASK-0011 (M7 polish) → TASK-0012 (M8 e2e/hardening, inclui trocar rate-limit mock por Upstash real se a conta existir até lá).
