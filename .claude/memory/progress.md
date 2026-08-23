@@ -2,7 +2,14 @@
 
 Fonte completa e sempre atual: `docs/tasks/BOARD.md`. Este arquivo é um snapshot rápido.
 
-## 🚀 v1.0.0 lançado em produção (2026-08-23)
+## 🚀 v1.1.0 lançado em produção (2026-08-23)
+Feature: dashboard admin pós-login (ADR-0006) — nav persistente + hub por cards, rota de fotos migrada para `/admin/projects/[projectId]/fotos`. Fluxo completo `@arquiteto`→`@ux-designer`(mockup aprovado pelo usuário)→`@pm`(TASK-0014/0015)→`@backend`/`@frontend`→`@reviewer`/`@qa`. Release via GitFlow (`release/1.1.0` → PR #22 → `main`, admin-bypass), tag `v1.1.0`.
+
+**Incidente de processo**: TASK-0014 e TASK-0015 rodaram em paralelo (2 agentes) no mesmo working directory compartilhado, colidindo com uma sessão interativa também ativa no projeto — causou `git stash` acidental do trabalho de um agente e um commit duplicado no branch do outro. Recuperado sem perda (cherry-pick + rebase), mas custou tempo. **Licao**: para trabalho paralelo com múltiplos agentes Bash-capable no mesmo repo, isolar em worktrees separadas.
+
+**Débito de GitFlow descoberto**: o job `sync-develop` (`release.yml`) consegue empurrar a branch de sync mas falha silenciosamente ao abrir o PR (permissão do `GITHUB_TOKEN` do Actions) — em **todo** release até agora precisou de intervenção manual (`gh pr create` na branch que o job já empurrou) para trazer `main` de volta pra `develop`. Verificar sempre após um release se `develop` ficou de fato sincronizada (`git diff origin/develop origin/main`), não confiar que o job resolveu sozinho.
+
+## v1.0.0 lançado em produção (2026-08-23)
 Release formal via GitFlow (`release/1.0.0` → PR #18 → `main`, merge admin-bypass pois autor não pode auto-aprovar), tag `v1.0.0`, deploy real `vercel deploy --prod`. URL: `https://portfolio-fotografico-eta.vercel.app`. GitHub Release: https://github.com/rodJeronimo/portfolio-fotografico/releases/tag/v1.0.0.
 
 ## 🎉 Roadmap original completo (M0–M8)
@@ -37,4 +44,4 @@ Nova env var real: (a) `.env.local`, (b) `PATCH /v9/projects/{id}/env/{envId}?te
 - Trocar mocks (rate-limit → Upstash, email → Resend) quando/se as contas existirem.
 
 ## Próximo (fora do roadmap original)
-Nada planejado — v1.0.0 em produção. Próximos passos ficam a critério do usuário (ex.: popular com fotos reais, revisão de UX, ou novas features).
+Nada planejado — v1.1.0 em produção. Débitos não-bloqueantes da última feature: teste unitário para `isActive()` (admin-nav.tsx), inconsistência visual pequena do indicador de item ativo mobile vs desktop. Próximos passos ficam a critério do usuário.
