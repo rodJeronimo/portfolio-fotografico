@@ -15,8 +15,8 @@ Owner: `@pm`. Fonte única de verdade do progresso. Cada linha aponta para o arq
 | ID | Título | Milestone | Agente | Status |
 |---|---|---|---|---|
 | [TASK-0004](done/TASK-0004-m0-fundacao.md) | Fundação: design tokens, layout root, fontes | M0 | `@frontend` | Concluida |
-| [TASK-0005](backlog/TASK-0005-m1-db-auth.md) | DB e Auth: schema Drizzle, NextAuth v5 | M1 | `@backend` | Bloqueada (requer conta Neon + GitHub OAuth App) |
-| [TASK-0006](backlog/TASK-0006-m2-admin-upload-mvp.md) | Admin upload MVP | M2 | `@backend` | Backlog |
+| [TASK-0005](done/TASK-0005-m1-db-auth.md) | DB e Auth: schema Drizzle, NextAuth v5 | M1 | `@backend` | Concluida |
+| [TASK-0006](backlog/TASK-0006-m2-admin-upload-mvp.md) | Admin upload MVP | M2 | `@backend` | Pronta (requer conta Cloudflare R2 para validação real) |
 | [TASK-0007](backlog/TASK-0007-m3-pipeline-imagens.md) | Pipeline de imagens (otimização, LQIP, ordenação) | M3 | `@backend` | Backlog |
 | [TASK-0008](backlog/TASK-0008-m4-galeria-publica.md) | Galeria pública (Home, projetos, lightbox) | M4 | `@frontend` | Backlog |
 | [TASK-0009](backlog/TASK-0009-m5-sobre-contato.md) | Sobre Mim e Contato | M5 | `@backend` | Backlog |
