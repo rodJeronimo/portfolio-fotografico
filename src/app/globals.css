@@ -56,12 +56,67 @@ body {
   outline-offset: 2px;
 }
 
-/* Lightbox (src/components/gallery/photo-gallery.tsx) usa <dialog> nativo. */
+/*
+ * Lightbox (src/components/gallery/photo-gallery.tsx) usa <dialog> nativo.
+ * Transição de abertura/fechamento via @starting-style (progressive
+ * enhancement — navegadores sem suporte abrem/fecham instantâneo, sem
+ * regressão funcional). Ver docs/design/public-site-redesign.md §7.
+ */
 dialog {
   border: none;
   color: var(--foreground);
+  transition:
+    opacity 200ms ease-out,
+    transform 200ms ease-out,
+    overlay 200ms allow-discrete,
+    display 200ms allow-discrete;
+  opacity: 1;
+  transform: scale(1);
 }
 
 dialog::backdrop {
   background: rgb(0 0 0 / 0.8);
+  transition:
+    opacity 200ms ease-out,
+    overlay 200ms allow-discrete,
+    display 200ms allow-discrete;
+  opacity: 1;
+}
+
+@starting-style {
+  dialog[open] {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  dialog[open]::backdrop {
+    opacity: 0;
+  }
+}
+
+dialog:not([open]) {
+  opacity: 0;
+  transform: scale(0.98);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  dialog,
+  dialog::backdrop {
+    transition-duration: 0.01ms;
+  }
+}
+
+/* Crossfade entre fotos ao navegar (Anterior/Próxima) — só com motion habilitado. */
+@media (prefers-reduced-motion: no-preference) {
+  dialog img {
+    animation: photo-fade-in 200ms ease-out;
+  }
+}
+
+@keyframes photo-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
