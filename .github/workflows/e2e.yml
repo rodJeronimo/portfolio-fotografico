@@ -23,21 +23,27 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps chromium
 
-      # PRs para main vêm de release/* ou hotfix/*, que já passaram pelo
-      # preview.yml em develop. Aqui aguardamos o Deployment/Status check
-      # de preview mais recente da Vercel para esse commit e usamos a URL
-      # resultante como alvo dos testes e2e.
-      - name: Wait for Vercel preview deployment
-        id: wait-preview
-        uses: patrickedqvist/wait-for-vercel-preview@v1.3.1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          max_timeout: 600
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+
+      # wait-for-vercel-preview depende do GitHub App da Vercel postar um
+      # Deployment status (actor vercel[bot]) — não acontece aqui porque o
+      # token Team-scoped usa `vercel deploy` via CLI (ver preview.yml), que
+      # não passa pela integração GitHub App. Por isso fazemos nosso próprio
+      # deploy de preview aqui, igual ao preview.yml, e testamos contra ele.
+      - name: Deploy to Vercel (preview)
+        id: deploy
+        run: |
+          url=$(vercel deploy --token=${{ secrets.VERCEL_TOKEN }} --yes)
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
       - name: Run Playwright tests
         run: npx playwright test
         env:
-          PLAYWRIGHT_BASE_URL: ${{ steps.wait-preview.outputs.url || 'http://localhost:3000' }}
+          PLAYWRIGHT_BASE_URL: ${{ steps.deploy.outputs.url }}
 
       - name: Upload Playwright report
         uses: actions/upload-artifact@v4
