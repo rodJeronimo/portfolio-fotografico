@@ -68,13 +68,13 @@ export function PhotoGallery({
 
   return (
     <>
-      <ul className="grid grid-cols-2 gap-4 px-4 py-8 sm:grid-cols-3 sm:px-8 lg:grid-cols-4">
+      <ul className="grid grid-cols-2 gap-6 px-4 pt-16 pb-8 sm:grid-cols-3 sm:gap-8 sm:px-8 sm:pt-24 lg:grid-cols-4 lg:gap-10">
         {photos.map((p, i) => (
           <li key={p.id}>
             <button
               type="button"
               onClick={(e) => open(i, e.currentTarget)}
-              className="bg-surface border-border relative block aspect-square w-full overflow-hidden rounded-md border"
+              className="bg-surface relative block aspect-square w-full overflow-hidden rounded-none"
               aria-label={p.title ? `Ver foto: ${p.title}` : "Ver foto ampliada"}
             >
               <Image
@@ -121,7 +121,7 @@ export function PhotoGallery({
               />
             </div>
             {photos.length > 1 && (
-              <div className="flex gap-4">
+              <div className="flex items-center gap-4">
                 <button
                   type="button"
                   onClick={() => step(-1)}
@@ -130,6 +130,9 @@ export function PhotoGallery({
                 >
                   ‹ Anterior
                 </button>
+                <span className="text-foreground text-xs font-medium tracking-[0.14em] tabular-nums uppercase">
+                  {String((index ?? 0) + 1).padStart(2, "0")} / {String(photos.length).padStart(2, "0")}
+                </span>
                 <button
                   type="button"
                   onClick={() => step(1)}

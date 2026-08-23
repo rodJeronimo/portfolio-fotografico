@@ -77,11 +77,18 @@ Foto individual com metadados e referência ao objeto no R2.
 - Índice: `(project_id, display_order)` para ordenação eficiente na galeria
 
 ### `site_settings`
-Conteúdo editável via admin (Sobre Mim, Contato, textos institucionais), chave-valor por locale.
-- `key` text PK (ex.: `about.bio`, `contact.email`)
+Conteúdo editável via admin (Sobre Mim, Contato, textos institucionais, configuração da
+Home), chave-valor por locale.
+- `key` text PK (ex.: `about.content`, `contact.email`, `home.featuredProjectId`)
 - `value` jsonb
 - `locale` text (`pt-BR` | `en`)
 - `updated_at` timestamptz
+
+Chaves em uso:
+| `key` | Formato de `value` | Uso |
+|---|---|---|
+| `about.content` | `string` | Conteúdo da página Sobre (`/admin/settings`) |
+| `home.featuredProjectId` | `{ "projectId": "<uuid>" \| null }` | Projeto em destaque da Home, override explícito sobre o fallback automático (primeiro por `display_order`). Ausência de linha ou `projectId: null` = automático. Sem FK de banco — leitura trata referência a projeto inexistente como "ausente" e cai no fallback (ver `docs/ADR/0007-home-featured-project-setting.md`). |
 
 ## Índices
 

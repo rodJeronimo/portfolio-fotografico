@@ -16,7 +16,7 @@ export default async function AboutPage() {
 
   return (
     <main className="mx-auto max-w-2xl px-4 py-16 sm:px-8">
-      <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">Sobre Mim</h1>
+      <h1 className="font-serif text-3xl font-normal tracking-normal sm:text-5xl">Sobre Mim</h1>
       {content ? (
         <p className="text-foreground mt-4 whitespace-pre-line text-base leading-relaxed">
           {content}

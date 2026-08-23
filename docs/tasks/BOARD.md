@@ -2,7 +2,7 @@
 
 Owner: `@pm`. Fonte única de verdade do progresso. Cada linha aponta para o arquivo de task em `docs/tasks/backlog/` (ou `docs/tasks/done/` quando concluída). Status possíveis: `Backlog`, `Pronta`, `Em andamento`, `Em revisao`, `Concluida`, `Bloqueada`.
 
-**Roadmap original (Fase 0–2 + M0–M8) 100% concluído** (2026-08-23). **Release v1.0.0 em produção** (2026-08-23) — https://github.com/rodJeronimo/portfolio-fotografico/releases/tag/v1.0.0. Ver `.claude/memory/progress.md` para o resumo executivo.
+**Roadmap original (Fase 0–2 + M0–M8) 100% concluído** (2026-08-23). **Release v1.1.0 em produção** (2026-08-23) — https://github.com/rodJeronimo/portfolio-fotografico/releases/tag/v1.1.0 (dashboard admin, ADR-0006). Ver `.claude/memory/progress.md` para o resumo executivo.
 
 ## Fase 2–4 (Setup)
 
@@ -33,6 +33,16 @@ Owner: `@pm`. Fonte única de verdade do progresso. Cada linha aponta para o arq
 |---|---|---|---|---|
 | [TASK-0014](done/TASK-0014-migracao-rota-fotos-projeto.md) | Migrar rota de fotos para /admin/projects/[projectId]/fotos | ADR-0006 | `@backend` | Concluida |
 | [TASK-0015](done/TASK-0015-layout-admin-dashboard.md) | Layout admin compartilhado + dashboard/hub em /admin | ADR-0006 | `@frontend` | Concluida |
+
+## Feature: Redesign fine-art do site público + destaque configurável da Home (ADR-0007)
+
+| ID | Título | Milestone | Agente | Status |
+|---|---|---|---|---|
+| [TASK-0016](done/TASK-0016-fundacao-sidebar-redesign.md) | Fundação tipográfica e sidebar de navegação (redesign fine-art) | Redesign | `@frontend` | Concluida |
+| [TASK-0017](done/TASK-0017-destaque-home-setting.md) | Destaque da Home configurável (site_settings home.featuredProjectId) | ADR-0007 | `@backend` | Concluida |
+| [TASK-0018](done/TASK-0018-home-destaque-grid.md) | Home: bloco de destaque e grid (redesign fine-art) | Redesign | `@frontend` | Concluida |
+| [TASK-0019](done/TASK-0019-projeto-lightbox-sobre.md) | Página de projeto, galeria e lightbox + Sobre (redesign fine-art) | Redesign | `@frontend` | Concluida |
+| [TASK-0020](done/TASK-0020-admin-destaque-home-ui.md) | Admin: seção "Destaque da Home" em /admin/settings | ADR-0007 | `@frontend` | Concluida |
 
 ## Convenções
 

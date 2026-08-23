@@ -10,3 +10,4 @@ Formato: [MADR](https://adr.github.io/madr/).
 | [0004](0004-nextauth-github-allowlist.md) | Autenticação admin: Auth.js v5 + GitHub + allowlist | Aceito |
 | [0005](0005-gitflow.md) | Versionamento: GitFlow clássico | Aceito |
 | [0006](0006-admin-dashboard-navigation.md) | Dashboard admin: layout compartilhado e rota de fotos aninhada em projeto | Aceito |
+| [0007](0007-home-featured-project-setting.md) | Projeto em destaque da Home como configuração explícita (`site_settings`) | Aceito |
