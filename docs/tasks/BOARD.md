@@ -2,7 +2,7 @@
 
 Owner: `@pm`. Fonte única de verdade do progresso. Cada linha aponta para o arquivo de task em `docs/tasks/backlog/` (ou `docs/tasks/done/` quando concluída). Status possíveis: `Backlog`, `Pronta`, `Em andamento`, `Em revisao`, `Concluida`, `Bloqueada`.
 
-**Roadmap original (Fase 0–2 + M0–M8) 100% concluído** (2026-08-23). Ver `.claude/memory/progress.md` para o resumo executivo.
+**Roadmap original (Fase 0–2 + M0–M8) 100% concluído** (2026-08-23). **Release v1.0.0 em produção** (2026-08-23) — https://github.com/rodJeronimo/portfolio-fotografico/releases/tag/v1.0.0. Ver `.claude/memory/progress.md` para o resumo executivo.
 
 ## Fase 2–4 (Setup)
 
