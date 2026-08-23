@@ -9,9 +9,8 @@ Fonte completa e sempre atual: `docs/tasks/BOARD.md`. Este arquivo é um snapsho
 - **TASK-0005 (M1 — DB e Auth) mesclada**: Auth.js v5 (GitHub, JWT, allowlist), `middleware.ts` real, migration inicial gerada (`drizzle/0000_low_khan.sql`), 8 testes unitários da allowlist. **Código pronto, mas não validado end-to-end** (sem conta Neon real nem GitHub OAuth App real).
 
 ## Bloqueado — precisa do usuário para desbloquear
-Nesta ordem, cada um desbloqueia validação real de tasks já com código pronto:
-1. **Conta Neon** → `DATABASE_URL` real → aplicar `npm run db:migrate` → valida TASK-0005 de fato.
-2. **GitHub OAuth App** (`github.com/settings/developers`, callback `.../api/auth/callback/github`) → `AUTH_GITHUB_ID`/`AUTH_GITHUB_SECRET` → valida login real (allow/deny) de TASK-0005.
+1. ~~**Conta Neon**~~ ✅ criada, `DATABASE_URL` real aplicada localmente e na Vercel, migration rodada (4 tabelas confirmadas).
+2. **GitHub OAuth App** (`github.com/settings/developers`, callback `.../api/auth/callback/github`) → `AUTH_GITHUB_ID`/`AUTH_GITHUB_SECRET` → valida login real (allow/deny) de TASK-0005. **Próximo passo.**
 3. **Cloudflare R2** (bucket + credenciais S3-compatible) → necessário para TASK-0006/M2 (upload) e TASK-0007/M3 (pipeline de imagens) terem qualquer validação real.
 4. **Upstash Redis** → rate limiting do upload (TASK-0006), menos urgente que R2.
 
